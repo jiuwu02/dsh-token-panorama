@@ -22,7 +22,7 @@ import { join } from "node:path";
 
 import { count, hourKey } from "./lib/time.js";
 import { Config, CONFIG_FIELDS, PEAK_MODES } from "./lib/schema.js";
-import { billingRules, migrateCalendars } from "./lib/billing.js";
+import { billingRules, isPriced, migrateCalendars } from "./lib/billing.js";
 import { HolidayStore } from "./lib/holidays.js";
 import { UsageIndex, storageDirOf } from "./lib/store.js";
 import { usageProjection } from "./lib/projection.js";
@@ -478,7 +478,7 @@ export function apply(ctx, config) {
         model,
         total: entry.total,
         calls: entry.calls,
-        configured: rules.models?.[model] !== undefined,
+        configured: isPriced(model, rules),
       }))
       .sort((left, right) => right.total - left.total);
   };

@@ -132,8 +132,15 @@ The model list defaults to the models the logs actually contain, ordered by usag
 puts a row in front of you for every model currently being charged. A model with no price row yet shows
 "not priced" and an *add price* button.
 
-Every model is priced on its own. A model missing from the sheet falls back to `defaultPrice`, and the cost
-card names it ("kimi-k3.1-pro is not priced; charging the default") instead of quietly billing zero.
+Usage is keyed by **`provider/model`**, not by model id alone: the session log records both on the
+assistant message's source, so the same model id served by two providers appears as two rows in the
+model distribution and can bill at two prices. A `provider/model` key uses its own price row when
+one exists; otherwise it inherits the bare model id's row, and only then falls back to `defaultPrice`.
+That means a config written before providers were recorded keeps working unchanged. In the price table
+an inherited row is shown read-only as "inherits &lt;model&gt;" with a *price separately* button that
+starts a `provider/model` override pre-filled from those numbers (enter the key as
+`Provider/model` to add one by hand). The cost card names a key with neither row
+("kimi-k3.1-pro is not priced; charging the default") instead of quietly billing zero.
 
 Four rates, billed separately. A provider does not treat every input token alike, so the sheet has one
 column per thing it charges for:
@@ -444,7 +451,9 @@ Response shape:
 ```
 
 `days`, `hours` and `models` rows are `[key, input, output, cacheRead, cacheWrite, total, calls, cost,
-peakInput, peakOutput, peakCacheRead, peakCacheWrite, peakTotal, peakCalls, peakCost]`. `sessionRows`
+peakInput, peakOutput, peakCacheRead, peakCacheWrite, peakTotal, peakCalls, peakCost]`. The `models` key
+and every `slotRows` model field are `provider/model` (or a bare model id for older logs without a
+provider). `sessionRows`
 rows are `[sessionId, title, createdAt, isSubagent(0|1), isArchived(0|1), total, calls, parentId,
 dayRows, cost, workspace, slotRows, models]`, where `dayRows` is `[day, …]` and `slotRows` is
 `[hour, model, input, output, cacheRead, cacheWrite, total, calls, cost, isPeak(0|1)]`. Archive state

@@ -48,12 +48,12 @@ if (typeof zstdCompressSync !== "function") {
 
 const ZONE = "Asia/Shanghai";
 const header = { version: 4, id: "session-test", createdAt: 1700000000000, cwd: "C:\\w" };
-const usageEvent = (seq, tokens) => ({
+const usageEvent = (seq, tokens, source = { model: "m" }) => ({
   seq,
   time: Date.parse("2026-11-03T02:00:00Z"),
   type: "assistant/message",
   data: {
-    message: { source: { model: "m" } },
+    message: { source },
     usage: {
       inputTokens: tokens,
       outputTokens: 1,
@@ -128,13 +128,29 @@ assert.deepEqual(
 const damaged = { zone: ZONE, title: "", rows: [["hour", "m", 1, 2, 3, 4, 5, 6], ["hour"]] };
 assert.equal(slotsOf(damaged).length, 1, "a short row must be dropped");
 assert.equal(stateOf({ rows: {} }), undefined, "a non-array rows field is not a state");
-assert.equal(USAGE_STATE_VERSION, 1, "a version bump must be deliberate: it invalidates every stored row");
+assert.equal(USAGE_STATE_VERSION, 2, "a version bump must be deliberate: it invalidates every stored row");
 assert.equal(
   JSON.parse(JSON.stringify(state)).rows.length,
   state.rows.length,
   "the state must survive the checkpoint's plain-JSON round trip",
 );
 assert.equal(zstdDecompressSync(frameOf([{ a: 1 }])).toString("utf8"), '{"a":1}\n');
+
+// The fold keys on provider + model, so the same model id from two sources
+// becomes two billable rows instead of one merged slot. Older logs without a
+// provider keep the bare model id, which is what the assertions above pin.
+const split = emptyState(ZONE);
+applyEvent(split, usageEvent(1, 10, { provider: "alpha", model: "m" }), bucket);
+applyEvent(split, usageEvent(2, 20, { provider: "beta", model: "m" }), bucket);
+applyEvent(split, usageEvent(3, 30, { provider: "alpha", model: "m" }), bucket);
+assert.deepEqual(
+  slotsOf(split),
+  [
+    ["2026-11-03T10", "alpha/m", 40, 2, 0, 0, 42, 2],
+    ["2026-11-03T10", "beta/m", 20, 1, 0, 0, 21, 1],
+  ],
+  "two providers must bill as two rows; one bare-model event stays bare",
+);
 
 // --- the negative cache: an unreadable log is not decoded twice -----------
 let opens = 0;

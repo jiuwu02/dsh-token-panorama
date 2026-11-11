@@ -38,7 +38,8 @@ const root = dirname(dirname(fileURLToPath(import.meta.url)));
 // specifier ("Received protocol 'c:'").
 const load = (relative) => import(pathToFileURL(join(root, relative)).href);
 const { Config, PEAK_MODES, modelRow } = await load("lib/schema.js");
-const { isPeak } = await load("lib/billing.js");
+const { isPeak, priceOf, priceSourceOf, isPriced, slotCost } = await load("lib/billing.js");
+const { billingKey, billingKeyOf } = await load("lib/route.js");
 const { usageFromChunk, appendLedger, toolUsageSummary } = await load(
   "lib/ledger.js",
 );
@@ -236,6 +237,40 @@ assert.equal(draft.peakProfiles["deepseek-standard"].mode, "workweek");
 assert.equal(applyPricePreset(draft, "no-such-preset"), null);
 assert.doesNotThrow(() => Config(draft), "an applied draft must validate");
 
+// --- provider-specific pricing -------------------------------------------
+// The same model id from two providers is folded under two keys. A composite
+// row prices that route alone; without one the bare model id's row is the
+// fallback, so a config written before providers were recorded still works.
+assert.equal(billingKey("alpha", "m"), "alpha/m");
+assert.equal(billingKey("", "m"), "m");
+assert.equal(billingKey("alpha", ""), "alpha/unknown");
+assert.equal(billingKeyOf({ data: { message: { source: { provider: "alpha", model: "m" } } } }), "alpha/m");
+assert.equal(billingKeyOf({ data: { message: { source: { model: "m" } } } }), "m");
+
+const cheap = modelRow(1, 0.1, 1, 2, "");
+const dear = modelRow(9, 0.9, 9, 18, "");
+const providerRules = {
+  ...rules,
+  models: { m: cheap, "alpha/m": dear },
+};
+assert.equal(priceOf("alpha/m", providerRules).input, 9, "a composite row wins");
+assert.equal(priceOf("beta/m", providerRules).input, 1, "a missing composite row inherits the bare model");
+assert.equal(priceOf("m", providerRules).input, 1, "a bare key is unchanged");
+assert.equal(priceSourceOf("beta/m", providerRules).from, "m", "the inherited row is named");
+assert.equal(priceSourceOf("gamma/m", { ...rules, models: {} }).from, "", "no row means the default");
+assert.equal(isPriced("beta/m", providerRules), true, "an inherited row is priced");
+assert.equal(isPriced("gamma/m", { ...rules, models: {} }), false, "the default is unpriced");
+// Two slots with the same tokens but different routes bill at their own rate.
+const slotFor = (key) => ["2026-11-03T10", key, 1_000_000, 0, 0, 0, 1_000_000, 1];
+assert.ok(
+  Math.abs(slotCost(slotFor("alpha/m"), false, providerRules) - 9) < 1e-9,
+  "the composite row prices the expensive route",
+);
+assert.ok(
+  Math.abs(slotCost(slotFor("beta/m"), false, providerRules) - 1) < 1e-9,
+  "the inherited row prices the cheap route",
+);
+
 // --- the tail merge behind the fast open ---------------------------------
 const merged = mergeSlots(
   [["2026-11-03T10", "m", 10, 5, 2, 1, 18, 3]],
@@ -266,6 +301,7 @@ await appendLedger(ctx, {
 await appendLedger(ctx, {
   kind: "usage",
   purpose: "prompt-optimizer",
+  provider: "alpha",
   model: "m",
   sessionId: "s1",
   input: 1_000_000,

@@ -263,7 +263,7 @@ window.__ModuleLoader__.load({
       "optimize.working": "优化中…",
       "settings.models.title": "模型价格",
       "settings.models.hint":
-        "按百万 tokens 计价，四项分开填写：未命中缓存的输入、命中缓存的读取、写入缓存、输出。供应商不收取的项填 0。命中价不是固定 10%——DeepSeek 只有 2%，填错会把缓存密集的账单高估数倍。打开峰谷开关后，这四项价格都按所选方案区分高峰期与空闲期。",
+        "按百万 tokens 计价，四项分开填写：未命中缓存的输入、命中缓存的读取、写入缓存、输出。供应商不收取的项填 0。命中价不是固定 10%——DeepSeek 只有 2%，填错会把缓存密集的账单高估数倍。打开峰谷开关后，这四项价格都按所选方案区分高峰期与空闲期。同一模型 ID 若被多个 Provider 以不同价格提供，可添加「Provider/模型」形式的行单独定价；未单独配置时沿用该模型 ID 的价格。",
       "settings.models.model": "模型",
       "settings.models.input": "输入·未命中",
       "settings.models.cacheRead": "输入·命中缓存",
@@ -278,6 +278,8 @@ window.__ModuleLoader__.load({
       "settings.models.peak": "峰谷计费",
       "settings.models.empty": "还没有可配置的模型。",
       "settings.models.unpriced": "未配置",
+      "settings.models.inherited": "沿用 {model}",
+      "settings.models.override": "单独定价",
       "settings.models.addRow": "添加价格",
       "settings.models.addPlaceholder":
         "输入模型名称，例如 deepseek-v4.1-flash",
@@ -443,7 +445,8 @@ window.__ModuleLoader__.load({
       "trend.calls": "调用",
       "trend.hourHint": "时间范围缩到一天以内，横轴自动切换为小时。",
       "model.title": "模型分布",
-      "model.hint": "按累计消耗排序，点击某个模型只看它的用量。",
+      "model.hint":
+        "按累计消耗排序，点击某个模型只看它的用量；同一模型来自不同 Provider 时各占一行。",
       "model.focused":
         "已筛选 {model}：下方统计只计该模型，会话列表也仅显示用过它的会话。",
       "model.clear": "显示全部",
@@ -583,7 +586,7 @@ window.__ModuleLoader__.load({
       "optimize.working": "Optimizing…",
       "settings.models.title": "Model prices",
       "settings.models.hint":
-        "Priced per million tokens, four items apart: uncached input, cache-hit input, cache write, output. Enter 0 for anything a provider does not bill. The cache-hit rate is not a flat 10% — DeepSeek charges 2%, and assuming otherwise overstates a cache-heavy bill several times over. Turning on peak pricing scales all four rates by the schedule.",
+        "Priced per million tokens, four items apart: uncached input, cache-hit input, cache write, output. Enter 0 for anything a provider does not bill. The cache-hit rate is not a flat 10% — DeepSeek charges 2%, and assuming otherwise overstates a cache-heavy bill several times over. Turning on peak pricing scales all four rates by the schedule. When one model id is served by several providers at different prices, add a 'Provider/model' row to price it separately; without one it inherits the bare model id's price.",
       "settings.models.model": "Model",
       "settings.models.input": "Input · miss",
       "settings.models.cacheRead": "Input · cache hit",
@@ -600,6 +603,8 @@ window.__ModuleLoader__.load({
       "settings.models.peak": "Peak pricing",
       "settings.models.empty": "No models to configure yet.",
       "settings.models.unpriced": "not priced",
+      "settings.models.inherited": "inherits {model}",
+      "settings.models.override": "Price separately",
       "settings.models.addRow": "Add price",
       "settings.models.addPlaceholder": "Model name, e.g. deepseek-v4.1-flash",
       "settings.models.add": "Add model",
@@ -770,7 +775,7 @@ window.__ModuleLoader__.load({
       "trend.hourHint": "A one-day range switches the axis to hours.",
       "model.title": "Models",
       "model.hint":
-        "Sorted by total consumption. Click a model to filter the page to it.",
+        "Sorted by total consumption. Click a model to filter the page to it; the same model id from different providers gets its own row.",
       "model.focused":
         "Filtered to {model}: the figures below cover only it, and the session list shows only sessions that used it.",
       "model.clear": "Show all",
@@ -1356,6 +1361,11 @@ window.__ModuleLoader__.load({
 .dts-unit{display:block;font-size:10px;line-height:14px;opacity:.8}
 .dts-modelName{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:var(--ds-font-family-code);font-size:11px}
 .dts-modelUsage{color:var(--dsw-alias-label-secondary);font-size:10px;line-height:14px;font-variant-numeric:tabular-nums}
+.dts-tagRow{display:flex;align-items:center;gap:6px;min-width:0;max-width:100%}
+.dts-tagRow .dts-tag{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.dts-tagLink{flex:none;padding:0;border:none;background:none;color:var(--dsw-alias-brand-primary);font:inherit;font-size:10px;line-height:16px;white-space:nowrap;cursor:pointer}
+.dts-tagLink:hover{text-decoration:underline}
+.dts-tagLink:disabled{opacity:.5;cursor:default;text-decoration:none}
 .dts-cellInput{box-sizing:border-box;width:100%;height:26px;padding:0 6px;border:1px solid var(--dsw-alias-border-l2);border-radius:6px;background:var(--dsw-alias-bg-base);color:var(--dsw-alias-label-primary);font:inherit;font-size:11px;font-variant-numeric:tabular-nums}
 .dts-cellInput:focus{outline:none;border-color:var(--dsw-alias-brand-primary)}
 .dts-cellSelect{box-sizing:border-box;width:100%;height:24px;padding:0 4px;border:1px solid var(--dsw-alias-border-l2);border-radius:6px;background:var(--dsw-alias-bg-base);color:var(--dsw-alias-label-primary);font:inherit;font-size:11px;cursor:pointer}
@@ -2701,7 +2711,15 @@ window.__ModuleLoader__.load({
                             delete next[name];
                             setModels(next);
                           },
-                          onAdd: (name) => patchModel(name, EMPTY_MODEL_ROW),
+                          onAdd: (name) => {
+            // A `provider/model` key inherits the bare model id's price, so
+            // "price separately" starts from those numbers instead of an empty
+            // row: the user only edits what differs for this provider.
+            const slash = name.indexOf("/");
+            const base =
+              slash > 0 ? models[name.slice(slash + 1)] : undefined;
+            patchModel(name, { ...(base ?? EMPTY_MODEL_ROW) });
+          },
                         }),
                       )
                     : null,
@@ -3152,12 +3170,15 @@ window.__ModuleLoader__.load({
       const [adding, setAdding] = useState("");
       const profileNames = Object.keys(profiles);
 
-      const priceInput = (model, row, field) =>
+      const priceInput = (model, row, field, readOnly = false) =>
         h("input", {
           className: "dts-cellInput",
           type: "number",
           min: "0",
           step: "0.0001",
+          // An inherited price is shown but not editable here: editing it
+          // would write a half-empty override. "Price separately" does that.
+          style: readOnly ? { opacity: 0.6 } : undefined,
           // The four rates mean different things to a provider's bill, and a
           // bare column heading is not enough to tell "input" from "cache
           // read". The description rides on the control itself so it is
@@ -3167,7 +3188,7 @@ window.__ModuleLoader__.load({
             row?.[field] === undefined || row?.[field] === null
               ? ""
               : String(row[field]),
-          disabled: !editable,
+          disabled: !editable || readOnly,
           "aria-label": `${model} ${t("settings.models." + field)}`,
           onChange: (event) => {
             const raw = event.target.value;
@@ -3179,6 +3200,28 @@ window.__ModuleLoader__.load({
             onPatch(model, { [field]: Number.isFinite(parsed) ? parsed : 0 });
           },
         });
+
+      /**
+       * The row a key actually bills at.
+       *
+       * A `provider/model` key with no row of its own inherits the bare model
+       * id's price. Showing it as unpriced would be wrong, but showing an
+       * editable row would claim a price the save has not written yet, so the
+       * table shows the inherited values read-only with one action to break
+       * the inheritance.
+       * @param key - a price-sheet key.
+       * @returns the row and the key it came from, or undefined for none.
+       */
+      const sourceOf = (key) => {
+        if (models[key] !== undefined) return { row: models[key], from: key };
+        const slash = key.indexOf("/");
+        if (slash > 0) {
+          const bare = key.slice(slash + 1);
+          if (models[bare] !== undefined)
+            return { row: models[bare], from: bare };
+        }
+        return undefined;
+      };
 
       return h(
         "div",
@@ -3242,7 +3285,29 @@ window.__ModuleLoader__.load({
                 t("settings.models.empty"),
               )
             : rows.map((entry) => {
-                const row = models[entry.model];
+                const source = sourceOf(entry.model);
+                const row = source?.row;
+                const inherited = source !== undefined && source.from !== entry.model;
+                const readOnly = inherited;
+                const priceCell = (field, withAdd) =>
+                  h(
+                    "div",
+                    { className: "dts-td" },
+                    row === undefined
+                      ? withAdd
+                        ? h(
+                            "button",
+                            {
+                              type: "button",
+                              className: "dts-btn dts-btnSmall",
+                              disabled: !editable,
+                              onClick: () => onAdd(entry.model),
+                            },
+                            t("settings.models.addRow"),
+                          )
+                        : null
+                      : priceInput(entry.model, row, field, readOnly),
+                  );
                 // A model can name a schedule that no longer exists — deleting
                 // one leaves its references behind. Showing the toggle as "on"
                 // for such a row would claim a discount the Host is not
@@ -3268,50 +3333,40 @@ window.__ModuleLoader__.load({
                           { className: "dts-tag", "data-kind": "subagent" },
                           t("settings.models.unpriced"),
                         )
-                      : null,
+                      : inherited
+                        ? h(
+                            "div",
+                            { className: "dts-tagRow" },
+                            h(
+                              "span",
+                              { className: "dts-tag", "data-kind": "subagent" },
+                              t("settings.models.inherited").replace(
+                                "{model}",
+                                source.from,
+                              ),
+                            ),
+                            h(
+                              "button",
+                              {
+                                type: "button",
+                                className: "dts-tagLink",
+                                disabled: !editable,
+                                onClick: () => onAdd(entry.model),
+                              },
+                              t("settings.models.override"),
+                            ),
+                          )
+                        : null,
                     h(
                       "span",
                       { className: "dts-modelUsage" },
                       formatCompact(entry.total),
                     ),
                   ),
-                  h(
-                    "div",
-                    { className: "dts-td" },
-                    row === undefined
-                      ? h(
-                          "button",
-                          {
-                            type: "button",
-                            className: "dts-btn dts-btnSmall",
-                            disabled: !editable,
-                            onClick: () => onAdd(entry.model),
-                          },
-                          t("settings.models.addRow"),
-                        )
-                      : priceInput(entry.model, row, "input"),
-                  ),
-                  h(
-                    "div",
-                    { className: "dts-td" },
-                    row === undefined
-                      ? null
-                      : priceInput(entry.model, row, "cacheRead"),
-                  ),
-                  h(
-                    "div",
-                    { className: "dts-td" },
-                    row === undefined
-                      ? null
-                      : priceInput(entry.model, row, "cacheWrite"),
-                  ),
-                  h(
-                    "div",
-                    { className: "dts-td" },
-                    row === undefined
-                      ? null
-                      : priceInput(entry.model, row, "output"),
-                  ),
+                  priceCell("input", true),
+                  priceCell("cacheRead", false),
+                  priceCell("cacheWrite", false),
+                  priceCell("output", false),
                   h(
                     "div",
                     { className: "dts-td dts-tdPeak" },
@@ -3323,7 +3378,7 @@ window.__ModuleLoader__.load({
                           h("input", {
                             type: "checkbox",
                             checked: enabled,
-                            disabled: !editable || profileNames.length === 0,
+                            disabled: !editable || readOnly || profileNames.length === 0,
                             onChange: (event) => {
                               // Turning the toggle on must pick a schedule that
                               // exists, else the row would look enabled while
@@ -3349,7 +3404,7 @@ window.__ModuleLoader__.load({
                           {
                             className: "dts-cellSelect",
                             value: row.peakProfile,
-                            disabled: !editable,
+                            disabled: !editable || readOnly,
                             "aria-label": `${entry.model} ${t("settings.peaks.aria")}`,
                             onChange: (event) =>
                               onPatch(entry.model, {
@@ -3392,7 +3447,11 @@ window.__ModuleLoader__.load({
                   h(
                     "div",
                     { className: "dts-td dts-tdAct" },
-                    row === undefined
+                    // Only a row with a price of its own is removable. An
+                    // inherited row is broken out by the link beside its tag,
+                    // so this narrow column stays empty for it rather than
+                    // squeezing a text button into 34px.
+                    row === undefined || inherited
                       ? null
                       : h(
                           "button",
