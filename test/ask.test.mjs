@@ -24,8 +24,8 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const load = (relative) => import(pathToFileURL(join(root, relative)).href);
 
-// schema.js first: the module graph has a circular edge through it.
-await load("lib/schema.js");
+// No warm-up import needed: the prompt defaults moved to a dependency-free
+// module, so the old circular edge through schema.js no longer exists.
 const { DEFAULT_ASK_PROMPT, shouldDefer, parseAnswerBatch, answerQuestions } =
   await load("lib/ask.js");
 

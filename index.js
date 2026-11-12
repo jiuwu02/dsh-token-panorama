@@ -32,6 +32,19 @@ import { toolUsageSummary } from "./lib/ledger.js";
 import { installStatsReset } from "./lib/stats-reset.js";
 import { applyPricePreset, pricePresetCatalog } from "./lib/prices.js";
 import { answerQuestions, shouldDefer } from "./lib/ask.js";
+import { buildReport } from "./lib/report.js";
+import {
+  fetchPriceCatalog,
+  mergePriceRows,
+  priceSyncSummary,
+} from "./lib/price-sync.js";
+import {
+  dataHealth,
+  movingAverage,
+  periodComparison,
+  rateSeries,
+  toolBreakdown,
+} from "./lib/insights.js";
 import {
   agentForSession,
   clearContext,
@@ -41,6 +54,10 @@ import {
   optimizePrompt,
   taskLocksFor,
 } from "./lib/contextops.js";
+
+/** The store exposes the aggregated metric fold as a plain snapshot field. */
+const usageMetricsOf = (doc) => doc?.metrics ?? null;
+
 export const name = "dsh-token-panorama";
 // `commands` joins the list because the two context commands are registered at
 // apply time, and `tokenMeter`/`agents` because the context operations read them
@@ -705,6 +722,17 @@ export function apply(ctx, config) {
           dailyCost: config?.budget?.dailyCost ?? 0,
           weeklyCost: config?.budget?.weeklyCost ?? 0,
         },
+        // P3 automation: read raw so the General tab round-trips what was
+        // actually saved instead of silently resetting to the defaults.
+        budgetAction: {
+          enabled: config?.budgetAction?.enabled === true,
+          webhookUrl: typeof config?.budgetAction?.webhookUrl === "string"
+            ? config.budgetAction.webhookUrl
+            : "",
+          cooldownMs: config?.budgetAction?.cooldownMs ?? 3_600_000,
+        },
+        pollIntervalMs: config?.pollIntervalMs ?? 0,
+        reportPeriod: config?.reportPeriod ?? "week",
       },
       override,
       editable: editor !== undefined && entry !== undefined,
@@ -914,9 +942,80 @@ export function apply(ctx, config) {
       dailyCost: config?.budget?.dailyCost ?? 0,
       weeklyCost: config?.budget?.weeklyCost ?? 0,
     };
+    // P2: the per-session metric folds are aggregated by the store and travel
+    // as their own block. It is optional: a profile whose cache has not been
+    // rebuilt yet still gets every other number, and the Client hides the new
+    // cards until this block is present.
+    doc.metrics = usageMetricsOf(doc);
+    doc.budgetAction = {
+      enabled: config?.budgetAction?.enabled === true,
+      webhookUrl: typeof config?.budgetAction?.webhookUrl === "string"
+        ? config.budgetAction.webhookUrl
+        : "",
+      cooldownMs: config?.budgetAction?.cooldownMs ?? 3_600_000,
+    };
+    doc.pollIntervalMs = config?.pollIntervalMs ?? 0;
+    doc.reportPeriod = config?.reportPeriod ?? "week";
+    // P1: the panel's derived series are computed once on the Host so the
+    // browser half stays a pure renderer. A missing module degrades to a null
+    // block and the Client simply hides those cards.
+    const days = doc.days ?? [];
+    const series = rateSeries(days);
+    doc.insights = {
+      rates: series,
+      movingHitRate: movingAverage(series.days, "hitRate", 7),
+      movingUnitCost: movingAverage(series.days, "unitCost", 7),
+      comparison: periodComparison(days, doc.firstDay ?? "", doc.lastDay ?? ""),
+      budgetUsed: budgetUsedFor(days, rules.timeZone),
+      toolBreakdown: toolBreakdown(doc.toolUsage),
+      health: dataHealth(doc),
+    };
     doc.stale = stale;
     return doc;
   };
+
+  /**
+   * Today's and this week's usage, in the configured zone, for the budget
+   * progress card. The same sums the passive warning uses, kept here so the
+   * two cards can never disagree about what "current" means.
+   * @param {Array} days - all day rows.
+   * @param {string} zone - the billing time zone.
+   * @returns {{dayTokens: number, weekTokens: number, dayCost: number, weekCost: number, elapsedShare: number}}
+   */
+  function budgetUsedFor(days, zone) {
+    const now = new Date();
+    const today = new Intl.DateTimeFormat("en-CA", {
+      timeZone: zone, year: "numeric", month: "2-digit", day: "2-digit",
+    }).format(now);
+    const [y, m, d] = today.split("-").map(Number);
+    const asUtc = Date.UTC(y, m - 1, d);
+    const backToMonday = (new Date(asUtc).getUTCDay() + 6) % 7;
+    const weekStart = new Date(asUtc - backToMonday * 86_400_000)
+      .toISOString()
+      .slice(0, 10);
+    const used = { dayTokens: 0, weekTokens: 0, dayCost: 0, weekCost: 0, elapsedShare: 1 };
+    for (const row of Array.isArray(days) ? days : []) {
+      if (!Array.isArray(row) || typeof row[0] !== "string") continue;
+      if (row[0] < weekStart) continue;
+      used.weekTokens += Number(row[5]) || 0;
+      used.weekCost += Number(row[7]) || 0;
+      if (row[0] === today) {
+        used.dayTokens += Number(row[5]) || 0;
+        used.dayCost += Number(row[7]) || 0;
+      }
+    }
+    // Fraction of the local day already elapsed, used only for the linear ETA.
+    const parts = new Intl.DateTimeFormat("en-GB", {
+      timeZone: zone, hour: "2-digit", minute: "2-digit", hour12: false,
+    }).formatToParts(now);
+    const hh = Number(parts.find((p) => p.type === "hour")?.value ?? 0);
+    const mm = Number(parts.find((p) => p.type === "minute")?.value ?? 0);
+    used.elapsedShare = Math.min(1, Math.max(0.01, (hh * 60 + mm) / 1440));
+    return used;
+  }
+
+  /** Timestamp of the last automatic budget action, for its cooldown. */
+  let lastBudgetActionAt = 0;
 
   /** Re-scan in the background; logs and swallows every failure. */
   const revalidate = async () => {
@@ -1367,6 +1466,84 @@ export function apply(ctx, config) {
               writeJson(res, 200, { ok: true, value: { cleared: true } });
               return;
             }
+            if (method === "report") {
+              // P3: a report is built from the snapshot the panel already has,
+              // so a request costs no second scan. The period is validated here
+              // rather than trusted from the Client.
+              const period = ["day", "week", "month"].includes(body.period)
+                ? body.period
+                : config?.reportPeriod ?? "week";
+              const doc = await decorate(index.snapshot(null), false);
+              const report = buildReport(doc, {
+                period,
+                timeZone: rules.timeZone,
+                currency: rules.currency,
+              });
+              writeJson(res, 200, { ok: true, value: report });
+              return;
+            }
+            if (method === "priceSync") {
+              // P3: an optional convenience. No stable public price API is
+              // guaranteed, so a failed fetch is reported honestly and the
+              // manual price sheet stays authoritative.
+              const fetched = await fetchPriceCatalog();
+              const value = fetched.ok
+                ? mergePriceRows(rules.models, fetched.entries, {
+                    onlyMissing: body.onlyMissing !== false,
+                  })
+                : null;
+              writeJson(res, 200, {
+                ok: true,
+                value: {
+                  ...fetched,
+                  models: value,
+                  summary: priceSyncSummary(rules.models, fetched.entries),
+                },
+              });
+              return;
+            }
+            if (method === "budgetAction") {
+              // P3: the only hard action this plugin takes on its own is
+              // compacting the session that is actually open. It never changes
+              // the model, spends money or publishes anything, and it is off
+              // unless the config switch is on.
+              const enabled = config?.budgetAction?.enabled === true;
+              const sessionId =
+                typeof body.sessionId === "string" ? body.sessionId : "";
+              const agent = sessionId === ""
+                ? undefined
+                : agentForSession(ctx, sessionId);
+              const cooldown = config?.budgetAction?.cooldownMs ?? 3_600_000;
+              const cooling = Date.now() - lastBudgetActionAt < cooldown;
+              if (!enabled || agent === undefined || cooling) {
+                writeJson(res, 200, {
+                  ok: true,
+                  value: {
+                    compacted: false,
+                    reason: !enabled ? "disabled" : agent === undefined ? "no-session" : "cooldown",
+                  },
+                });
+                return;
+              }
+              lastBudgetActionAt = Date.now();
+              const outcome = await runContextOp("compact", agent);
+              const url = config?.budgetAction?.webhookUrl ?? "";
+              if (url !== "") {
+                try {
+                  await fetch(url, {
+                    method: "POST",
+                    headers: { "content-type": "application/json" },
+                    body: JSON.stringify({ at: Date.now(), reason: "budget" }),
+                    signal: AbortSignal.timeout(5000),
+                  });
+                } catch { /* a dead webhook must not fail the action */ }
+              }
+              writeJson(res, 200, {
+                ok: true,
+                value: { compacted: outcome.ok, result: outcome.text },
+              });
+              return;
+            }
             writeJson(res, 404, {
               ok: false,
               error: {
@@ -1432,6 +1609,10 @@ function projectionSchema() {
         zone: z.string(),
         title: z.string(),
         rows: z.array(z.array(z.union([z.string(), z.number()]))),
+        // P2: the same fold also carries the serialized metric aggregate. It
+        // is unknown() rather than a fixed shape so a newer fold cannot be
+        // rejected by an older validator; deserializeMetrics() owns the shape.
+        metrics: z.unknown().optional(),
       })
       .strict();
   }

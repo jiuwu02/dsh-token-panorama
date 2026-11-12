@@ -1,6 +1,6 @@
 {
   "meta": {
     "title": "Token Panorama",
-    "description": "Reads every stored session log into a token panorama: totals, cache hit rate, peak/off-peak cost, a calendar heatmap, a trend chart, a collapsible session tree, workspace breakdown, and CSV/JSON export, plus context clear/compact actions, prompt optimization, and auto answers for ask_user_question batches."
+    "description": "Reads every stored session log into a token panorama: lifetime totals, cache hit rate and unit cost, peak/off-peak billing, calendar heatmap, trend and efficiency charts, budget alerts, session/workspace/model breakdown, tool self-consumption ledger, runtime metrics, CSV/JSON/Markdown export and periodic reports, plus context clear/compact, prompt optimization, auto answers, and English/Chinese/Japanese locales."
   }
 }

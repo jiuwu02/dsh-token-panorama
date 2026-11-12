@@ -33,6 +33,21 @@ third-party dependency is required.
 - **Incremental refresh**: a per-session revision token decides what to re-read, so a refresh only decodes
   sessions that actually changed.
 - **Holiday auto-update**: any year is fetched at runtime and cached, so a new year needs no new build.
+- **Efficiency & cost cards**: per-day cache hit rate, cost per million tokens, 7-day moving averages,
+  period-over-period and year-over-year deltas, a budget progress bar with an 80% warning and a linear ETA,
+  a breakdown of the plugin's own model spend, and a data-health readout (cache version, last scan, unpriced
+  models, whether runtime metrics have been collected).
+- **Linked filtering**: clicking a day in either heatmap narrows the shared range to that day; clicking a
+  workspace focuses the session list on that project. The model card keeps its own page-wide filter.
+- **Runtime metrics**: latency (TTFT, decode and model-call time), tool calls / errors / duration, turn and
+  step counts, aborted turns, compaction counts and removed tokens, and a context-pressure series scored
+  against the model window recorded in `request/context`. These come from the same event log, folded into
+  the projection at state version 3; a cache rebuild populates them.
+- **Reports & automation**: CSV / Markdown reports for a day, week or month; optional best-effort price-sheet
+  sync (manual prices stay authoritative); a configurable poll interval (the Host prefix route has no SSE
+  channel); and an optional hard action that compacts only the currently open session when a budget is
+  exceeded, with a cooldown and an optional webhook. Japanese is a fallback locale over the full English
+  dictionary.
 - **Context actions**: Clear (orange) and Compact (green) buttons in the dock under the composer, plus the
   `/clear-context`, `/compact-context` and `/compact` commands. Compact runs mid-conversation: it fixes a cut
   before summarizing, so everything written while the summarizer works stays verbatim behind the summary, and
@@ -50,6 +65,18 @@ third-party dependency is required.
   away. Off by default; permission approvals, credentials, irreversible actions, payment and publishing are
   never answered. Instruction, route and wait limit live on the **Auto answers** settings tab.
 - **Bilingual**: Chinese and English follow the platform locale.
+- **Budget alerts**: four independent `budget` thresholds — `dailyTokens`, `weeklyTokens`, `dailyCost`,
+  `weeklyCost` — each disabled by `0`. When today's or this week's tokens / cost exceed a set limit, a passive
+  warning strip appears in the panel header; cost figures use the configured billing currency. Set them on the
+  **General** tab.
+- **Tool self-consumption ledger**: the plugin's own model calls (compaction, prompt optimization, automatic
+  answers) never enter a session log, so each is recorded in `tool-usage.jsonl` and priced with the same sheet;
+  the panel shows a **Tool self-consumption** stat and a **Compaction ROI** stat beside the session totals.
+- **Restore previous config**: every save keeps the last five configs, and **Restore previous** writes the most
+  recent one back while snapshotting the current one — so a bad price in the wrong row can be undone.
+- **Session statistics reset on Clear**: after Clear context, the platform's own 「会话统计」 popup starts again
+  from zero instead of showing pre-clear totals; Compact keeps accumulating. A compatibility patch on that popup,
+  with no platform file touched.
 
 ## Requirements
 
@@ -123,10 +150,12 @@ seven tabs:
 | **Context** | The compaction instruction, its model route, the live context readout, and the automatic and segmented compaction switches |
 | **Prompt optimization** | The optimizer instruction, its model route, and whether the request carries an excerpt of the session's context |
 | **Auto answers** | The answering instruction, its model route, the wait limit, and the master switch |
-| **General** | Billing time zone and currency |
+| **General** | Billing time zone and currency, plus the four budget-alert thresholds |
 
 The window can **export** the billing configuration to JSON and **import** a shared one; an import only
-fills the form, so nothing changes until Save is pressed.
+fills the form, so nothing changes until Save is pressed. Its bottom row also holds **Clear parse cache**,
+**Restore previous** and the save/cancel controls: the first drops the cached folds so the next open
+re-reads every session log, the second is described below.
 
 The model list defaults to the models the logs actually contain, ordered by usage, so opening the window
 puts a row in front of you for every model currently being charged. A model with no price row yet shows
@@ -199,6 +228,33 @@ re-fetch. The statutory-holiday calendar is on by default.
 
 The bundled list is seed data, not the source of truth: once a year is fetched its network copy wins.
 
+### Budget alerts
+
+The **General** tab carries a `budget` block with four independent thresholds: `dailyTokens`,
+`weeklyTokens`, `dailyCost`, `weeklyCost`. Each is a number and `0` turns that threshold off, which is the
+default — a fresh config warns about nothing. The two token limits compare against the token totals the panel
+already sums, and the two cost limits against the priced cost; the currency comes from the billing config, so
+the cost warnings are labelled with the same unit as the cost card.
+
+The four are checked separately against today and this calendar week in the configured billing time zone, not
+against whatever range the cards below are narrowed to: "current usage" must mean the clock's current period.
+When a set limit is exceeded, a passive warning strip appears at the top of the panel header — one line per
+threshold crossed. It only reports; nothing is throttled, blocked or rewritten. The comparison reads the
+unfiltered day table, so the strip stays correct even when the rest of the page is filtered to one model or a
+hand-picked date range. The strings live in `budget.*` and `settings.budget.*`.
+
+### Restoring a previous config
+
+Every save first writes the config it is about to replace into a ring of the last five values at
+`~/.dsh/storages/dsh-token-panorama/config-backups.json` (under the profile home). The schema proves a value
+is legal but cannot prove a legal price landed in the right row, so **Restore previous** on the settings window
+puts the most recent saved value back. It goes through the same `saveConfig` path as the Save button, which
+means the config being replaced is itself snapshotted first: pressing restore twice returns to where you
+started instead of trapping you in the past. The restored value passes `Config` like any other write. A
+`restoreConfig` action carries `{position}` to the HTTP API, where `position` 0 is the newest backup — the
+window's button always asks for 0 — and `configBackups` lists the ring's timestamps. A missing position
+answers 404.
+
 ### Context actions
 
 Two buttons sit in the dock under the composer, in the same row as the context-usage meter they act on:
@@ -234,8 +290,8 @@ forbids mentioning the compaction itself.
 The three shipped instructions (compaction, optimizer, answers) share one shape: `# 角色定义`,
 `## 核心能力`, `## 核心红线`, `## 工作流程`, `## 交付格式`. They live on three different tabs — Context,
 Prompt optimization, Auto answers — but share the same skeleton, so editing one is a matter of keeping the
-other two aligned. The defaults live in `lib/contextops.js`
-(`DEFAULT_COMPACT_PROMPT`, `DEFAULT_OPTIMIZER_PROMPT`) and `lib/ask.js` (`DEFAULT_ASK_PROMPT`), and
+other two aligned. The defaults now live in `lib/prompts.js`
+(`DEFAULT_COMPACT_PROMPT`, `DEFAULT_OPTIMIZER_PROMPT`, `DEFAULT_ASK_PROMPT`), which `lib/contextops.js` and `lib/ask.js` re-export, and
 `test/prompts.test.mjs` pins the three properties worth protecting — the shared five-heading shape,
 half-width punctuation in the instruction itself, and each prompt's own load-bearing clause — so a later
 rewrite cannot drift.
@@ -325,6 +381,55 @@ Answers are never written into the transcript either: the question card shows wh
 turn's content is the model's own, so nothing an automatic answer decided can leak into a later summary as if
 you had said it.
 
+### Tool self-consumption ledger
+
+The three tool groups above all call a model directly: compaction writes the summary, prompt optimization
+rewrites the draft, and the answerer replies to a question. None of those calls is a session turn, so none of
+their tokens ever appears in a session log — the panorama would quietly show a bill with a line missing.
+`lib/ledger.js` closes that gap: each call appends one JSONL record to
+`~/.dsh/storages/dsh-token-panorama/tool-usage.jsonl` and is priced with the same price sheet, peak rules and
+`provider/model` key as a session call. The summary travels beside the session totals as its own labelled
+block rather than being folded into them.
+
+Records carry one of three purposes — `compaction`, `prompt-optimizer`, `ask-answer` — and
+`toolUsageSummary` returns `byPurpose`, `byDay`, `totals` and `cost`, plus a compaction ROI built from
+`savedTokens / consumedTokens`: the tokens of history the rewrite removed against the tokens the summarizer
+spent to remove it. The `optimizer` and `answer` sub-blocks break out the other two; that `answer` block is
+where the "answered N" line on the token overview comes from. Clear and Compact also append `surface` rows
+with the `beforeTokens` / `afterTokens` counts of the swap, which feed ROI and the "clear N×" line — they are
+bookkeeping, not model spend. When the adapter reports no usage, a character estimate is recorded and marked
+`estimated` rather than reported as a confident zero.
+
+A summary cut off by the output limit is retried with a larger budget rather than accepted half-written: only
+`max-tokens` is retried, an adapter failure surfaces on the first attempt, and if every rung is truncated the
+compaction is abandoned, so no half-written summary ever replaces the history. The ledger still records the
+spend of each attempt, because those tokens were real whichever way the stream ended.
+
+Appends are fire-and-forget: an accounting write must never fail the operation it accounts for. One torn line
+is skipped on read rather than failing a snapshot. The panel shows the two cards **Tool self-consumption**
+(`stat.tool*`) and **Compaction ROI** (`stat.compactROI*`) beside the session totals.
+
+### Session statistics reset on Clear
+
+After **Clear context** the conversation is empty, but the platform's own 「会话统计」 popup (that dashboard,
+not this plugin's panel) is built from two deliberately monotonic whole-log folds — `sessionStats` and
+`tokenUsage` — so it would otherwise keep showing the totals of a conversation that no longer exists. Paging
+and compaction must not change those totals, and Compact does **not** reset them; only Clear does.
+
+`lib/stats-reset.js` is a compatibility patch scoped to that popup. `installStatsReset` runs inside
+`ctx.inject(['sessionProjections'])` and wraps the `apply()` of those two folds in the Host's live projection
+registry: when a committed event is a clear-context marker, `apply` returns that unit's own `init()` — a zero
+state that is by construction schema-valid, with no `stateVersion` bump and no copy of upstream logic.
+Later activity accumulates from zero. Because every fold path reads `apply` at call time, the reset covers a
+live `drive`, a lazy rebuild, a cold replay and a checkpoint restore alike; the emitted zero view wins on the
+Client's higher-seq-wins projection store. Units that register after this plugin mounts are wrapped on arrival
+too, and the wrapper undoes itself when the injection fiber is disposed on unmount.
+
+The platform bundles are packed into a read-only `app.asar`, so no platform file is modified — the patch lives
+entirely in the registry. A registry whose shape changes is a logged no-op rather than a crash, and
+`test/stats-reset.test.mjs` pins marker recognition, that a normal compaction keeps accumulating, that
+post-clear events count from zero, and that unload restores the original folds.
+
 ### Validation
 
 The platform schema and the plugin each validate before a save lands: an unknown zone, a malformed `HH:MM`, a
@@ -376,7 +481,7 @@ no such service or no matching row, the window degrades to read-only and says wh
 - **Buckets**: usage is keyed by the local calendar day of the event timestamp; billing additionally splits by
   hour, converted through the configured zone.
 - **Cache**: the folded result is written to `~/.dsh/storages/dsh-token-panorama/usage-cache.json`
-  (`CACHE_VERSION = 5`), written atomically via a temp file and rename. Each record also carries the
+  (`CACHE_VERSION = 6`), written atomically via a temp file and rename. Each record also carries the
   byte offset and the highest sequence number it has folded, which is what lets the next pass resume.
 - **Projection seed**: when the Host's `sessionProjections` service is present, the plugin registers its
   own fold (`tokenPanoramaUsage`) so the Host keeps it current as events are committed. A session whose
@@ -401,10 +506,16 @@ Host/Origin fence (`ctx.connection.requestRejection`) and be `POST` with a JSON 
 | `refresh`    | `{}`                | Alias for a forced refresh.                                     |
 | `config`     | `{}`                | Return the live config, its field list, and editability. `models` carries the Host's live model catalog (each entry with its context window). |
 | `saveConfig` | `{"value": {...}}`  | Validate and persist a config; returns it with the field list. Automatic compaction runs in this plugin and writes no platform config, so there is no "did the mirror land" field. |
+| `restoreConfig` | `{"position": 0}` | Write the backup at `position` (0 = newest) back through `saveConfig`, snapshotting the current one too; returns the saved config, field list and `restoredAt`. A missing position answers 404. |
 | `holidays`   | `{}`                | Force a re-fetch; returns whether it changed and the per-year list. |
 | `clearContext` | `{"sessionId": "..."}` | Replace that session's whole surface with a placeholder. |
 | `compactContext` | `{"sessionId": "..."}` | Summarize that session with a direct model call and replace the surface. |
 | `contextPressure` | `{"sessionId": "..."}` | Measure one session: total tokens, the system/tools/messages split, the routed model's context window, and the share in use. |
+| `optimizePrompt` | `{"sessionId": "...", "text": "...", "route": {...}}` | Rewrite the composer draft with the optimizer model and return only the rewritten text; `text` is required, `route` is an optional provider/model hint. |
+| `report` | `{"period": "week"}` | Build a day / week / month report from the current snapshot; returns totals, top models, top workspaces and highlights. |
+| `priceSync` | `{"onlyMissing": true}` | Best-effort fetch of a public price sheet; never writes config. The manual sheet stays authoritative. |
+| `budgetAction` | `{"sessionId": "..."}` | If enabled and out of cooldown, compact the open session on a budget breach and POST a webhook when configured. |
+| `status`, `pricePresets`, `applyPresets`, `configBackups`, `clearCache` | see the settings window | Session/lock status, built-in price presets, the config backup ring, and a forced cache rebuild. |
 
 Response shape:
 
@@ -491,6 +602,14 @@ lib/ask.js          The question answerer: forbidden-zone screen, answer validat
 lib/store.js        Revision-keyed cache, the frame-level scan, and the snapshot (per day / per model)
 lib/frames.js       Walking a stored log's Zstandard frames to decode only what is new
 lib/projection.js   The tokenPanoramaUsage projection unit the Host keeps current
+lib/stats-reset.js  Zero the platform's 会话统计 folds at a clear marker (a reversible projection-registry patch)
+lib/ledger.js       The tool self-consumption ledger (tool-usage.jsonl) and its priced summary
+lib/prompts.js      Shared instruction defaults and the prompt loaders
+lib/insights.js     Pure derivations drawn from the snapshot's day rows
+lib/metrics.js      Runtime-metric folds: latency, tools, errors, turns and context pressure
+lib/price-sync.js   Optional best-effort price-sheet fetch, normalization and merge
+lib/report.js       Periodic report generation (CSV / Markdown) from one snapshot
+lib/locale-ja.js    Japanese fallback locale built on the full English dictionary
 lib/http.js         Request body reading and JSON responses
 client.js           Client half: panel, heatmap, trend chart, session tree, workspaces, export
 locale/en.json      plugin metadata (English)

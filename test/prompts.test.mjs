@@ -21,8 +21,9 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const load = (relative) => import(pathToFileURL(join(root, relative)).href);
 
-// schema.js first: the module graph has a circular edge through it.
-await load("lib/schema.js");
+// The default instructions now live in lib/prompts.js, which has no imports:
+// the old schema -> ask -> contextops -> ledger -> store -> schema cycle is
+// gone, so a bare import of any of these modules works without a warm-up.
 const { DEFAULT_COMPACT_PROMPT, DEFAULT_OPTIMIZER_PROMPT } = await load(
   "lib/contextops.js",
 );
@@ -64,3 +65,24 @@ assert.match(DEFAULT_COMPACT_PROMPT, /分段优先/u);
 assert.match(DEFAULT_COMPACT_PROMPT, /不受本规则约束/u);
 
 console.log("prompts ok: shared shape, half-width only, fence-free, segment precedence");
+
+// The optimizer's strict fence extraction: a model that disobeys the
+// "no code block, no advice outside it" instruction must not leave its closing
+// fence or trailing tips in the draft that is about to be sent.
+const { extractFencedBody } = await load("lib/contextops.js");
+assert.equal(
+  extractFencedBody("```markdown\n# Goal\nDo the thing.\n```\nTip: use it often."),
+  "# Goal\nDo the thing.",
+  "a leading fenced block yields only its body, dropping trailing advice",
+);
+assert.equal(
+  extractFencedBody("Plain prompt with no fence."),
+  null,
+  "a plain answer is not mistaken for a fenced one",
+);
+assert.equal(
+  extractFencedBody("```\nOne line only.\n```"),
+  "One line only.",
+  "a fence with no trailing text still yields its body",
+);
+

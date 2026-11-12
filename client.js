@@ -494,6 +494,77 @@ window.__ModuleLoader__.load({
       "stat.compactROI": "压缩盈亏",
       "stat.compactROI.hint": "压缩花费 {cost}，省下 {saved} tokens",
       "stat.compactROI.none": "尚无压缩记录",
+      "insight.title": "效率与成本",
+      "insight.hint": "缓存命中率、单位成本与周期对比，均基于所选时间范围。",
+      "insight.hitRate": "缓存命中率",
+      "insight.unitCost": "单位成本",
+      "insight.per1M": "每百万 tokens",
+      "insight.avg7d": "7 日均值",
+      "insight.compare": "周期对比",
+      "insight.vsPrev": "较上一周期",
+      "insight.yoy": "较去年同期",
+      "insight.noBaseline": "暂无可比区间",
+      "insight.up": "上升 {pct}%",
+      "insight.down": "下降 {pct}%",
+      "insight.flat": "持平",
+      "budget.progress": "预算进度",
+      "budget.remaining": "剩余 {remaining}",
+      "budget.status.ok": "正常",
+      "budget.status.warning": "接近上限",
+      "budget.status.exceeded": "已超限",
+      "budget.eta": "按当前速率预计 {value}",
+      "tool.detail": "工具自耗明细",
+      "tool.detail.empty": "暂无工具调用记录",
+      "tool.purpose.compaction": "上下文压缩",
+      "tool.purpose.prompt-optimizer": "提示词优化",
+      "tool.purpose.ask-answer": "自动代答",
+      "tool.purpose.unknown": "其他",
+      "health.title": "数据状态",
+      "health.cacheVersion": "缓存版本 {version}",
+      "health.scan": "最近扫描 {time}",
+      "health.days": "覆盖 {count} 天",
+      "health.unpriced": "{count} 个模型未定价",
+      "health.stale": "后台刷新中",
+      "health.fresh": "数据已同步",
+      "health.metrics": "已采集运行指标",
+      "health.noMetrics": "运行指标待重建缓存",
+      "action.report": "生成报告",
+      "action.reportMd": "报告 (Markdown)",
+      "action.reportCsv": "报告 (CSV)",
+      "action.priceSync": "同步价格",
+      "action.copyTable": "复制表格",
+      "action.copied": "已复制",
+      "action.health": "刷新并查看状态",
+      "link.heatmap": "点击某天可将范围收窄到该日",
+      "link.focusWorkspace": "点击工作区可聚焦该项目",
+      "poll.on": "每 {seconds} 秒自动刷新",
+      "metric.title": "运行指标",
+      "metric.hint": "来自会话日志的速度、工具、错误与轮次统计；需重建缓存后才有数据。",
+      "metric.empty": "尚无运行指标，请点击「刷新并查看状态」重建缓存。",
+      "metric.speed": "速度与延迟",
+      "metric.ttft": "首 token 延迟",
+      "metric.decode": "解码耗时",
+      "metric.llm": "模型调用耗时",
+      "metric.llmCalls": "模型调用",
+      "metric.outputTokens": "输出 tokens",
+      "metric.avgTtft": "平均 {value} ms",
+      "metric.tools": "工具使用",
+      "metric.toolCalls": "工具调用",
+      "metric.toolErrors": "失败",
+      "metric.toolMs": "工具耗时",
+      "metric.topTools": "高频工具",
+      "metric.errors": "错误与轮次",
+      "metric.turns": "轮次",
+      "metric.steps": "步骤",
+      "metric.userMessages": "用户消息",
+      "metric.aborted": "中断轮次",
+      "metric.compactions": "压缩次数",
+      "metric.shadowed": "压缩移除 tokens",
+      "metric.pressure": "上下文压力",
+      "metric.window": "窗口 {value} tokens",
+      "metric.pressureHint": "最近 {count} 次调用的输入侧占用；窗口来自 request/context。",
+
+
       "budget.title": "预算提醒",
       "budget.dailyTokens": "今日 token {used} 已超过预算 {limit}",
       "budget.weeklyTokens": "本周 token {used} 已超过预算 {limit}",
@@ -519,6 +590,20 @@ window.__ModuleLoader__.load({
       "settings.budget.weeklyTokens": "周 token 预算",
       "settings.budget.dailyCost": "日费用预算",
       "settings.budget.weeklyCost": "周费用预算",
+      "settings.automation.title": "自动化",
+      "settings.automation.hint": "预算超限后的动作、面板自动刷新间隔与默认报告周期。",
+      "settings.automation.budgetAction": "超限时自动压缩当前会话",
+      "settings.automation.budgetActionHint": "只压缩当前打开的会话；不会更换模型、不会产生费用、不会发布任何内容。",
+      "settings.automation.webhook": "Webhook 地址",
+      "settings.automation.webhookHint": "预算超限时 POST 一个 JSON 通知；留空关闭。失败不影响压缩动作。",
+      "settings.automation.cooldown": "动作冷却（分钟）",
+      "settings.automation.poll": "自动刷新间隔（秒）",
+      "settings.automation.pollHint": "0 表示关闭；平台 prefix 路由没有 SSE 通道，采用轮询。",
+      "settings.automation.reportPeriod": "默认报告周期",
+      "settings.automation.day": "日",
+      "settings.automation.week": "周",
+      "settings.automation.month": "月",
+
       "optimize.blocking": "提示词优化中…",
       "optimize.revert": "回退",
       "optimize.revert.hint": "恢复到这次优化前的输入",
@@ -824,6 +909,77 @@ window.__ModuleLoader__.load({
       "stat.compactROI": "Compaction ROI",
       "stat.compactROI.hint": "compaction cost {cost}, saved {saved} tokens",
       "stat.compactROI.none": "no compaction yet",
+      "insight.title": "Efficiency & cost",
+      "insight.hint": "Cache hit rate, unit cost and period comparison for the selected range.",
+      "insight.hitRate": "Cache hit rate",
+      "insight.unitCost": "Unit cost",
+      "insight.per1M": "per 1M tokens",
+      "insight.avg7d": "7-day average",
+      "insight.compare": "Period comparison",
+      "insight.vsPrev": "vs previous period",
+      "insight.yoy": "vs last year",
+      "insight.noBaseline": "no comparable period yet",
+      "insight.up": "up {pct}%",
+      "insight.down": "down {pct}%",
+      "insight.flat": "unchanged",
+      "budget.progress": "Budget progress",
+      "budget.remaining": "{remaining} left",
+      "budget.status.ok": "on track",
+      "budget.status.warning": "nearing limit",
+      "budget.status.exceeded": "over limit",
+      "budget.eta": "projected {value} at this rate",
+      "tool.detail": "Tool spend detail",
+      "tool.detail.empty": "no tool calls recorded",
+      "tool.purpose.compaction": "Context compaction",
+      "tool.purpose.prompt-optimizer": "Prompt optimization",
+      "tool.purpose.ask-answer": "Auto answers",
+      "tool.purpose.unknown": "Other",
+      "health.title": "Data health",
+      "health.cacheVersion": "cache version {version}",
+      "health.scan": "last scan {time}",
+      "health.days": "{count} days covered",
+      "health.unpriced": "{count} unpriced models",
+      "health.stale": "refreshing in background",
+      "health.fresh": "up to date",
+      "health.metrics": "runtime metrics collected",
+      "health.noMetrics": "runtime metrics need a cache rebuild",
+      "action.report": "Generate report",
+      "action.reportMd": "Report (Markdown)",
+      "action.reportCsv": "Report (CSV)",
+      "action.priceSync": "Sync prices",
+      "action.copyTable": "Copy table",
+      "action.copied": "copied",
+      "action.health": "Refresh & check status",
+      "link.heatmap": "Click a day to narrow the range to it",
+      "link.focusWorkspace": "Click a workspace to focus that project",
+      "poll.on": "auto-refresh every {seconds}s",
+      "metric.title": "Runtime metrics",
+      "metric.hint": "Speed, tools, errors and turns folded from session logs; rebuild the cache to populate.",
+      "metric.empty": "No runtime metrics yet — use Refresh & check status to rebuild the cache.",
+      "metric.speed": "Speed & latency",
+      "metric.ttft": "Time to first token",
+      "metric.decode": "Decode time",
+      "metric.llm": "Model call time",
+      "metric.llmCalls": "Model calls",
+      "metric.outputTokens": "Output tokens",
+      "metric.avgTtft": "avg {value} ms",
+      "metric.tools": "Tool usage",
+      "metric.toolCalls": "Tool calls",
+      "metric.toolErrors": "failed",
+      "metric.toolMs": "Tool time",
+      "metric.topTools": "Top tools",
+      "metric.errors": "Errors & turns",
+      "metric.turns": "Turns",
+      "metric.steps": "Steps",
+      "metric.userMessages": "User messages",
+      "metric.aborted": "Aborted turns",
+      "metric.compactions": "Compactions",
+      "metric.shadowed": "Tokens removed",
+      "metric.pressure": "Context pressure",
+      "metric.window": "window {value} tokens",
+      "metric.pressureHint": "Input-side tokens for the last {count} calls; window from request/context.",
+
+
       "budget.title": "Budget warning",
       "budget.dailyTokens": "today's tokens {used} exceed the budget {limit}",
       "budget.weeklyTokens": "this week's tokens {used} exceed the budget {limit}",
@@ -849,6 +1005,20 @@ window.__ModuleLoader__.load({
       "settings.budget.weeklyTokens": "Weekly token budget",
       "settings.budget.dailyCost": "Daily cost budget",
       "settings.budget.weeklyCost": "Weekly cost budget",
+      "settings.automation.title": "Automation",
+      "settings.automation.hint": "What happens past a budget, the panel poll interval, and the default report period.",
+      "settings.automation.budgetAction": "Compact the open session when a budget is exceeded",
+      "settings.automation.budgetActionHint": "Compacts only the session currently open; it never switches models, spends money, or publishes anything.",
+      "settings.automation.webhook": "Webhook URL",
+      "settings.automation.webhookHint": "POSTs a JSON notification on a budget breach; empty disables it. A dead webhook never fails the action.",
+      "settings.automation.cooldown": "Action cooldown (minutes)",
+      "settings.automation.poll": "Auto-refresh interval (seconds)",
+      "settings.automation.pollHint": "0 disables it; the Host prefix route has no SSE channel, so refresh is a poll.",
+      "settings.automation.reportPeriod": "Default report period",
+      "settings.automation.day": "Day",
+      "settings.automation.week": "Week",
+      "settings.automation.month": "Month",
+
       "optimize.blocking": "Optimizing the prompt…",
       "optimize.revert": "Revert",
       "optimize.revert.hint": "Restore the input from before this optimization",
@@ -860,6 +1030,78 @@ window.__ModuleLoader__.load({
       "state.loading": "Reading session logs…",
       "state.error": "Could not read usage: {message}",
       "state.retry": "Retry",
+    };
+
+
+    /**
+     * Japanese is a FALLBACK locale, not a full third translation.
+     *
+     * The ZH and EN dictionaries carry 331 identical keys and are pinned by
+     * test/i18n.test.mjs. Maintaining a third full set would triple that work
+     * for a locale the panel may never be shown in, so JA starts as a complete
+     * copy of EN and overrides only the ~35 most visible labels; everything
+     * else deliberately falls back to English. This is the same tradeoff the
+     * standalone lib/locale-ja.js implements as a testable helper.
+     */
+    const JA = {
+      ...EN,
+      "nav.label": "トークン概要",
+      "range.label": "期間",
+      "settings.tab.models": "モデルと価格",
+      "settings.tab.peaks": "ピーク時間帯",
+      "settings.tab.holidays": "祝日",
+      "settings.tab.general": "一般",
+      "settings.tab.context": "コンテキスト",
+      "settings.tab.optimizer": "プロンプト最適化",
+      "settings.tab.ask": "自動回答",
+      "range.all": "すべて",
+      "range.today": "今日",
+      "range.24h": "直近24時間",
+      "range.week": "今週",
+      "range.7": "直近7日",
+      "range.month": "今月",
+      "range.30": "直近30日",
+      "range.hint": "すべてのカードがこの期間を共有します",
+      "stat.total": "累計トークン",
+      "stat.input": "入力 (キャッシュミス)",
+      "stat.output": "出力",
+      "stat.cacheRead": "キャッシュ読取",
+      "stat.cacheWrite": "キャッシュ書込",
+      "stat.calls": "呼出回数",
+      "stat.sessions": "セッション数",
+      "stat.cost": "推定費用",
+      "stat.hitRate": "キャッシュ命中率",
+      "stat.peak": "ピーク時間",
+      "stat.offPeak": "オフピーク",
+      "stat.tool": "ツール自消費",
+      "stat.compactROI": "圧縮効果",
+      "trend.title": "使用量トレンド",
+      "trend.day": "日",
+      "trend.week": "週",
+      "trend.month": "月",
+      "trend.year": "年",
+      "trend.hour": "時間",
+      "heat.title": "使用量ヒートマップ",
+      "heat.week": "週",
+      "heat.month": "月",
+      "model.title": "モデル分布",
+      "model.clear": "すべて表示",
+      "session.title": "セッション使用量",
+      "workspace.title": "ワークスペース分布",
+      "budget.title": "予算警告",
+      "settings.title": "一般設定",
+      "settings.save": "保存",
+      "settings.cancel": "キャンセル",
+      "action.export": "エクスポート",
+      "action.exportCsv": "CSV をエクスポート",
+      "action.exportJson": "JSON をエクスポート",
+      "action.report": "レポート生成",
+      "insight.title": "効率とコスト",
+      "insight.hitRate": "キャッシュ命中率",
+      "insight.unitCost": "単位コスト",
+      "budget.progress": "予算進捗",
+      "tool.detail": "ツール消費の内訳",
+      "health.title": "データ状態",
     };
 
     //#endregion
@@ -1238,6 +1480,11 @@ window.__ModuleLoader__.load({
       restoreConfig: (position) =>
         post("token-stats/api/restoreConfig", { position }),
       clearCache: () => post("token-stats/api/clearCache", {}),
+      report: (period) => post("token-stats/api/report", { period }),
+      priceSync: (onlyMissing) =>
+        post("token-stats/api/priceSync", { onlyMissing }),
+      budgetAction: (sessionId) =>
+        post("token-stats/api/budgetAction", { sessionId }),
     };
 
     //#endregion
@@ -1463,6 +1710,37 @@ window.__ModuleLoader__.load({
 .dts-statLabel{color:var(--dsw-alias-label-secondary);font-size:12px;line-height:18px}
 .dts-statValue{margin-top:4px;font-size:22px;font-weight:600;line-height:28px;font-variant-numeric:tabular-nums}
 .dts-statHint{margin-top:2px;color:var(--dsw-alias-label-secondary);font-size:11px;line-height:16px;font-variant-numeric:tabular-nums}
+/* P1 insight cards: a two-column grid of small readouts, plus two full-width
+   rows for the tool ledger and data health. The progress bars reuse the same
+   amber/red/green vocabulary as the budget warning and the peak bands. */
+.dts-insights{margin-top:16px}
+.dts-insightGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;padding:0 16px 14px}
+.dts-insightBox{padding:10px 12px;border:.5px solid var(--dsw-alias-border-l1);border-radius:9px;background:var(--dsw-alias-bg-layer-1);min-width:0}
+.dts-insightWide{margin:0 16px 12px}
+.dts-insightLabel{font-size:11px;color:var(--dsw-alias-label-secondary);line-height:16px}
+.dts-insightValue{font-size:20px;font-weight:600;line-height:28px;font-variant-numeric:tabular-nums;color:var(--dsw-alias-label-primary)}
+.dts-insightHint{font-size:11px;color:var(--dsw-alias-label-secondary);line-height:16px;margin-top:4px}
+.dts-miniLine{display:block;width:100%;height:32px;margin-top:4px}
+.dts-insightRows{display:grid;grid-template-columns:1fr auto;gap:2px 10px;font-size:12px;line-height:20px;margin-top:6px}
+.dts-budgetRow{margin-top:8px}
+.dts-budgetRowHead{display:flex;justify-content:space-between;font-size:11px;line-height:16px}
+.dts-budgetRowHead [data-status=exceeded]{color:var(--dsw-alias-state-error-primary)}
+.dts-budgetRowHead [data-status=warning]{color:var(--dsw-alias-state-warn-primary)}
+.dts-progress{height:6px;border-radius:3px;background:var(--dsw-alias-border-l1);overflow:hidden;margin-top:4px}
+.dts-progressFill{height:100%;background:var(--dsw-alias-state-success-primary)}
+.dts-progressFill[data-status=warning]{background:var(--dsw-alias-state-warn-primary)}
+.dts-progressFill[data-status=exceeded]{background:var(--dsw-alias-state-error-primary)}
+.dts-toolRow,.dts-healthRow{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:12px;line-height:20px}
+.dts-toolRow>:first-child{flex:1 1 140px;font-weight:600}
+.dts-healthRow span{color:var(--dsw-alias-label-secondary)}
+.dts-workspace[data-focused=true]{outline:1px solid var(--dsw-alias-brand-primary);border-radius:6px;cursor:pointer}
+.dts-cell[role=button],.dts-workspace[role=button]{cursor:pointer}
+.dts-cell[role=button]:focus-visible,.dts-workspace[role=button]:focus-visible{outline:2px solid var(--dsw-alias-brand-primary);outline-offset:1px}
+.dts-actionNote{margin:8px 20px 0;padding:6px 10px;border-radius:6px;background:var(--dsw-alias-bg-layer-2);color:var(--dsw-alias-label-secondary);font-size:11px;line-height:16px}
+.dts-metricGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:6px 10px;margin-top:6px}
+.dts-metricCell{min-width:0}
+.dts-metricCell .dts-insightValue{font-size:14px;line-height:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
 /* Budget alerts and the stale-while-revalidate caveat warn in one amber, the
    counterpart to the red/green the peak bands use — one colour per meaning. */
 .dts-budget{margin:16px 0 0;padding:10px 14px;border:1px solid color-mix(in srgb,var(--dsw-alias-state-warn-primary) 45%,var(--dsw-alias-border-l1));border-radius:10px;background:color-mix(in srgb,var(--dsw-alias-state-warn-primary) 10%,transparent)}
@@ -1844,6 +2122,388 @@ window.__ModuleLoader__.load({
         hint === undefined
           ? null
           : h("div", { className: "dts-statHint" }, hint),
+      );
+    }
+
+    /**
+     * P1/P3 derived cards: efficiency series, period comparison, budget
+     * progress, tool spend detail and data health.
+     *
+     * Every number arrives precomputed in doc.insights from the Host, so this
+     * component is a pure renderer and the arithmetic stays unit-testable in
+     * lib/insights.js. A profile whose Host build predates that block simply
+     * renders nothing.
+     */
+    function MiniLine({ points, color }) {
+      const values = (points ?? []).filter((v) => typeof v === "number");
+      if (values.length < 2) return null;
+      const max = Math.max(1, ...values);
+      const path = values
+        .map((v, i) =>
+          `${i === 0 ? "M" : "L"}${(i / (values.length - 1)) * 100},${30 - (v / max) * 28}`,
+        )
+        .join(" ");
+      return h(
+        "svg",
+        { viewBox: "0 0 100 32", preserveAspectRatio: "none", className: "dts-miniLine" },
+        // keep the stroke at a constant 1.5 CSS px: without this the non-uniform
+        // viewBox stretch makes steep segments look thicker than flat ones
+        h("path", {
+          d: path,
+          fill: "none",
+          stroke: color,
+          strokeWidth: 1.5,
+          vectorEffect: "non-scaling-stroke",
+          strokeLinecap: "round",
+          strokeLinejoin: "round",
+        }),
+      );
+    }
+
+    function pctLabel(t, ratio) {
+      if (ratio === null || ratio === undefined) return t("insight.noBaseline");
+      const pct = Math.round(ratio * 100);
+      if (pct === 0) return t("insight.flat");
+      return pct > 0
+        ? t("insight.up").replace("{pct}", String(pct))
+        : t("insight.down").replace("{pct}", String(-pct));
+    }
+
+    function InsightCards({ doc, t, formatInt, cost, currency }) {
+      const data = doc?.insights;
+      if (data === null || data === undefined) return null;
+      const rates = data.rates ?? { days: [], avgHitRate: 0, avgUnitCost: 0 };
+      const cmp = data.comparison ?? null;
+      const entries = (data.budgetUsed !== undefined && doc?.budget !== undefined)
+        ? (function () {
+            // budgetProgress is computed on the Host too; this is the same
+            // shape, kept here as a defensive fallback for older Host builds.
+            const b = doc.budget ?? {};
+            const u = data.budgetUsed ?? {};
+            const pairs = [
+              ["dailyTokens", "dayTokens", "tokens"],
+              ["weeklyTokens", "weekTokens", "tokens"],
+              ["dailyCost", "dayCost", "cost"],
+              ["weeklyCost", "weekCost", "cost"],
+            ];
+            return pairs.map(([key, usedKey, unit]) => {
+              const limit = Number(b[key]) || 0;
+              const used = Number(u[usedKey]) || 0;
+              const ratio = limit > 0 ? used / limit : 0;
+              return {
+                key, unit, limit, used, ratio,
+                remaining: limit > 0 ? Math.max(0, limit - used) : null,
+                status: limit <= 0 ? "off" : ratio > 1 ? "exceeded" : ratio >= 0.8 ? "warning" : "ok",
+                eta: limit > 0 && u.elapsedShare > 0 && used > 0 ? used / u.elapsedShare : null,
+              };
+            });
+          })()
+        : [];
+      const activeBudgets = entries.filter((e) => e.status !== "off");
+      const purposeLabel = (p) => {
+        const key = `tool.purpose.${p}`;
+        return t(key) === key ? t("tool.purpose.unknown") : t(key);
+      };
+      const health = data.health ?? {};
+      const fmtCost = (v) => cost(v, currency);
+      return h(
+        "div",
+        { className: "dts-card dts-insights" },
+        h(
+          "div",
+          { className: "dts-cardHead" },
+          h("h2", { className: "dts-cardTitle" }, t("insight.title")),
+          h("p", { className: "dts-cardHint" }, t("insight.hint")),
+        ),
+        h(
+          "div",
+          { className: "dts-insightGrid" },
+          // Efficiency: two sparklines plus their averages.
+          h(
+            "div",
+            { className: "dts-insightBox" },
+            h("div", { className: "dts-insightLabel" }, t("insight.hitRate")),
+            h(
+              "div",
+              { className: "dts-insightValue" },
+              `${(rates.avgHitRate * 100).toFixed(1)}%`,
+            ),
+            h(MiniLine, {
+              points: rates.days.map((d) => d.hitRate),
+              color: "var(--dsw-alias-brand-primary)",
+            }),
+            h(
+              "div",
+              { className: "dts-insightHint" },
+              `${t("insight.avg7d")} · ${(data.movingHitRate ?? []).filter((v) => v !== null).slice(-1)[0] !== undefined
+                ? (((data.movingHitRate ?? []).filter((v) => v !== null).slice(-1)[0]) * 100).toFixed(1) + "%"
+                : "—"}`,
+            ),
+          ),
+          h(
+            "div",
+            { className: "dts-insightBox" },
+            h("div", { className: "dts-insightLabel" }, t("insight.unitCost")),
+            h("div", { className: "dts-insightValue" }, fmtCost(rates.avgUnitCost)),
+            h(MiniLine, {
+              points: rates.days.map((d) => d.unitCost),
+              color: "var(--dsw-alias-state-warn-primary)",
+            }),
+            h("div", { className: "dts-insightHint" }, t("insight.per1M")),
+          ),
+          // Period comparison.
+          h(
+            "div",
+            { className: "dts-insightBox" },
+            h("div", { className: "dts-insightLabel" }, t("insight.compare")),
+            h(
+              "div",
+              { className: "dts-insightRows" },
+              h("span", null, t("insight.vsPrev")),
+              h("strong", null, pctLabel(t, cmp?.delta?.total ?? null)),
+              h("span", null, t("insight.yoy")),
+              h("strong", null, pctLabel(t, cmp?.delta?.yoyTotal ?? null)),
+            ),
+          ),
+          // Budget progress bars.
+          h(
+            "div",
+            { className: "dts-insightBox" },
+            h("div", { className: "dts-insightLabel" }, t("budget.progress")),
+            activeBudgets.length === 0
+              ? h("div", { className: "dts-insightHint" }, t("budget.status.ok"))
+              : activeBudgets.map((e) =>
+                  h(
+                    "div",
+                    { key: e.key, className: "dts-budgetRow" },
+                    h(
+                      "div",
+                      { className: "dts-budgetRowHead" },
+                      h("span", null, t(`settings.budget.${e.key}`)),
+                      h(
+                        "span",
+                        { "data-status": e.status },
+                        t(`budget.status.${e.status}`),
+                      ),
+                    ),
+                    h(
+                      "div",
+                      { className: "dts-progress", role: "progressbar" },
+                      h("div", {
+                        className: "dts-progressFill",
+                        "data-status": e.status,
+                        style: { width: `${Math.min(100, e.ratio * 100)}%` },
+                      }),
+                    ),
+                    h(
+                      "div",
+                      { className: "dts-insightHint" },
+                      e.remaining !== null
+                        ? t("budget.remaining").replace(
+                            "{remaining}",
+                            e.unit === "cost" ? fmtCost(e.remaining) : formatInt(e.remaining),
+                          )
+                        : "",
+                      e.eta !== null
+                        ? " · " + t("budget.eta").replace(
+                            "{value}",
+                            e.unit === "cost" ? fmtCost(e.eta) : formatInt(e.eta),
+                          )
+                        : "",
+                    ),
+                  ),
+                ),
+          ),
+        ),
+        // Tool spend detail.
+        h(
+          "div",
+          { className: "dts-insightBox dts-insightWide" },
+          h("div", { className: "dts-insightLabel" }, t("tool.detail")),
+          (data.toolBreakdown ?? []).length === 0
+            ? h("div", { className: "dts-insightHint" }, t("tool.detail.empty"))
+            : (data.toolBreakdown ?? []).map((row) =>
+                h(
+                  "div",
+                  { key: row.purpose, className: "dts-toolRow" },
+                  h("span", null, purposeLabel(row.purpose)),
+                  h("span", null, `${formatInt(row.tokens)} tokens`),
+                  h("span", null, fmtCost(row.cost)),
+                  h("span", null, `${formatInt(row.calls)}×`),
+                ),
+              ),
+        ),
+        // Data health.
+        h(
+          "div",
+          { className: "dts-insightBox dts-insightWide" },
+          h("div", { className: "dts-insightLabel" }, t("health.title")),
+          h(
+            "div",
+            { className: "dts-healthRow" },
+            h("span", null, health.stale ? t("health.stale") : t("health.fresh")),
+            h("span", null, t("health.days").replace("{count}", String(health.dayCount ?? 0))),
+            h("span", null,
+              t("health.unpriced").replace("{count}", String((health.unpricedModels ?? []).length))),
+            h("span", null, health.hasMetrics ? t("health.metrics") : t("health.noMetrics")),
+            health.lastScanAt
+              ? h("span", null,
+                  t("health.scan").replace("{time}", new Date(health.lastScanAt).toLocaleString()))
+              : null,
+          ),
+        ),
+      );
+    }
+
+
+
+    /**
+     * P2 runtime metrics folded from the session log.
+     *
+     * The wire shape is owned by lib/metrics.js: days rows are 18 columns,
+     * tools rows are [name, calls, errors, ms], pressure rows are
+     * [timeMs, inputSideTokens, contextWindow]. Everything is read defensively
+     * so a snapshot from an older Host build (or an empty cache) renders the
+     * empty state instead of throwing.
+     */
+    function MetricsCard({ doc, t, formatInt, formatCompact }) {
+      const m = doc?.metrics;
+      if (m === null || m === undefined) return null;
+      const days = Array.isArray(m.days) ? m.days : [];
+      const tools = Array.isArray(m.tools) ? m.tools : [];
+      const pressure = Array.isArray(m.pressure) ? m.pressure : [];
+      const totals = m.totals ?? {};
+      if (days.length === 0 && tools.length === 0 && pressure.length === 0)
+        return h(
+          "div",
+          { className: "dts-card dts-insights" },
+          h("h2", { className: "dts-cardTitle" }, t("metric.title")),
+          h("p", { className: "dts-cardHint" }, t("metric.empty")),
+        );
+      // Column order comes from serializeMetrics(): day, llmCalls, ttftMs,
+      // decodeMs, llmMs, outputTokens, toolCalls, toolErrors, toolMs, turns,
+      // steps, userMessages, completedTurns, abortedTurns, compactOps,
+      // shadowedTokens, maxTtftMs, inputSideTokens.
+      const sum = (index) =>
+        days.reduce((acc, row) => acc + (Number(row?.[index]) || 0), 0);
+      const llmCalls = sum(1) || Number(totals.llmCalls) || 0;
+      const ttftMs = sum(2);
+      const decodeMs = sum(3);
+      const llmMs = sum(4);
+      const toolCalls = sum(6) || Number(totals.toolCalls) || 0;
+      const toolErrors = sum(7) || Number(totals.toolErrors) || 0;
+      const turns = sum(9) || Number(totals.turns) || 0;
+      const steps = sum(10) || Number(totals.steps) || 0;
+      const userMessages = sum(11) || Number(totals.userMessages) || 0;
+      const aborted = sum(13) || Number(totals.abortedTurns) || 0;
+      const compactOps = sum(14) || Number(totals.compactOps) || 0;
+      const shadowed = sum(15) || Number(totals.shadowedTokens) || 0;
+      const avgTtft = llmCalls > 0 ? Math.round(ttftMs / llmCalls) : 0;
+      const windowValue = m.window ?? null;
+      const spark = pressure.slice(-40).map((p) => Number(p?.[1]) || 0);
+      const peak = Math.max(1, ...spark);
+      const path = spark
+        .map((v, i) =>
+          `${i === 0 ? "M" : "L"}${(i / Math.max(1, spark.length - 1)) * 100},${30 - (v / peak) * 28}`,
+        )
+        .join(" ");
+      const cell = (label, value) =>
+        h(
+          "div",
+          { className: "dts-metricCell" },
+          h("div", { className: "dts-insightLabel" }, label),
+          h("div", { className: "dts-insightValue" }, value),
+        );
+      return h(
+        "div",
+        { className: "dts-card dts-insights" },
+        h(
+          "div",
+          { className: "dts-cardHead" },
+          h("h2", { className: "dts-cardTitle" }, t("metric.title")),
+          h("p", { className: "dts-cardHint" }, t("metric.hint")),
+        ),
+        h(
+          "div",
+          { className: "dts-insightGrid" },
+          h(
+            "div",
+            { className: "dts-insightBox" },
+            h("div", { className: "dts-insightLabel" }, t("metric.speed")),
+            h(
+              "div",
+              { className: "dts-metricGrid" },
+              cell(t("metric.llmCalls"), formatInt(llmCalls)),
+              cell(t("metric.ttft"), t("metric.avgTtft").replace("{value}", formatInt(avgTtft))),
+              cell(t("metric.decode"), formatCompact(decodeMs) + " ms"),
+              cell(t("metric.llm"), formatCompact(llmMs) + " ms"),
+            ),
+          ),
+          h(
+            "div",
+            { className: "dts-insightBox" },
+            h("div", { className: "dts-insightLabel" }, t("metric.tools")),
+            h(
+              "div",
+              { className: "dts-metricGrid" },
+              cell(t("metric.toolCalls"), formatInt(toolCalls)),
+              cell(t("metric.toolErrors"), formatInt(toolErrors)),
+              cell(
+                t("metric.topTools"),
+                tools.length === 0
+                  ? "—"
+                  : tools.slice(0, 3).map((r) => String(r[0])).join(", "),
+              ),
+            ),
+          ),
+          h(
+            "div",
+            { className: "dts-insightBox" },
+            h("div", { className: "dts-insightLabel" }, t("metric.errors")),
+            h(
+              "div",
+              { className: "dts-metricGrid" },
+              cell(t("metric.turns"), formatInt(turns)),
+              cell(t("metric.steps"), formatInt(steps)),
+              cell(t("metric.userMessages"), formatInt(userMessages)),
+              cell(t("metric.aborted"), formatInt(aborted)),
+              cell(t("metric.compactions"), formatInt(compactOps)),
+              cell(t("metric.shadowed"), formatCompact(shadowed)),
+            ),
+          ),
+          h(
+            "div",
+            { className: "dts-insightBox" },
+            h("div", { className: "dts-insightLabel" }, t("metric.pressure")),
+            h(
+              "div",
+              { className: "dts-insightValue" },
+              windowValue === null
+                ? "—"
+                : t("metric.window").replace("{value}", formatCompact(windowValue)),
+            ),
+            path === ""
+              ? null
+              : h(
+                  "svg",
+                  { viewBox: "0 0 100 32", preserveAspectRatio: "none", className: "dts-miniLine" },
+                  h("path", {
+                    d: path,
+                    fill: "none",
+                    stroke: "var(--dsw-alias-brand-primary)",
+                    strokeWidth: 1.5,
+                    vectorEffect: "non-scaling-stroke",
+                    strokeLinecap: "round",
+                    strokeLinejoin: "round",
+                  }),
+                ),
+            h(
+              "div",
+              { className: "dts-insightHint" },
+              t("metric.pressureHint").replace("{count}", String(spark.length)),
+            ),
+          ),
+        ),
       );
     }
 
@@ -4009,6 +4669,111 @@ window.__ModuleLoader__.load({
               ),
           ),
         ),
+        // P3 automation: the passive budget warning's one hard action, the
+        // panel's poll interval, and the default report period. All three are
+        // optional and default to off / open-to-refresh / weekly.
+        h(
+          "div",
+          { className: "dts-group" },
+          h("div", { className: "dts-groupTitle" }, t("settings.automation.title")),
+          h("p", { className: "dts-fieldDesc" }, t("settings.automation.hint")),
+          h(
+            "label",
+            { className: "dts-switch" },
+            h("input", {
+              type: "checkbox",
+              disabled: !editable,
+              checked: (draft.budgetAction?.enabled ?? false) === true,
+              onChange: (event) =>
+                onPatch({
+                  budgetAction: {
+                    ...(draft.budgetAction ?? {}),
+                    enabled: event.target.checked,
+                  },
+                }),
+            }),
+            h("span", null, t("settings.automation.budgetAction")),
+          ),
+          h("p", { className: "dts-fieldDesc" }, t("settings.automation.budgetActionHint")),
+          h(
+            "div",
+            { className: "dts-field" },
+            h("div", { className: "dts-fieldHead" },
+              h("span", { className: "dts-fieldKey" }, t("settings.automation.webhook"))),
+            h("input", {
+              className: "dts-input",
+              type: "text",
+              disabled: !editable,
+              value: String(draft.budgetAction?.webhookUrl ?? ""),
+              onChange: (event) =>
+                onPatch({
+                  budgetAction: {
+                    ...(draft.budgetAction ?? {}),
+                    webhookUrl: event.target.value,
+                  },
+                }),
+            }),
+            h("p", { className: "dts-fieldDesc" }, t("settings.automation.webhookHint")),
+          ),
+          h(
+            "div",
+            { className: "dts-field" },
+            h("div", { className: "dts-fieldHead" },
+              h("span", { className: "dts-fieldKey" }, t("settings.automation.cooldown"))),
+            h("input", {
+              className: "dts-input",
+              type: "number",
+              min: "1",
+              step: "1",
+              disabled: !editable,
+              value: String(Math.round((draft.budgetAction?.cooldownMs ?? 3600000) / 60000)),
+              onChange: (event) =>
+                onPatch({
+                  budgetAction: {
+                    ...(draft.budgetAction ?? {}),
+                    cooldownMs: Math.max(60000, (Number(event.target.value) || 60) * 60000),
+                  },
+                }),
+            }),
+          ),
+          h(
+            "div",
+            { className: "dts-field" },
+            h("div", { className: "dts-fieldHead" },
+              h("span", { className: "dts-fieldKey" }, t("settings.automation.poll"))),
+            h("input", {
+              className: "dts-input",
+              type: "number",
+              min: "0",
+              step: "1",
+              disabled: !editable,
+              value: String(Math.round((draft.pollIntervalMs ?? 0) / 1000)),
+              onChange: (event) =>
+                onPatch({
+                  pollIntervalMs: Math.max(0, (Number(event.target.value) || 0) * 1000),
+                }),
+            }),
+            h("p", { className: "dts-fieldDesc" }, t("settings.automation.pollHint")),
+          ),
+          h(
+            "div",
+            { className: "dts-field" },
+            h("div", { className: "dts-fieldHead" },
+              h("span", { className: "dts-fieldKey" }, t("settings.automation.reportPeriod"))),
+            h(
+              "select",
+              {
+                className: "dts-select",
+                disabled: !editable,
+                value: String(draft.reportPeriod ?? "week"),
+                onChange: (event) => onPatch({ reportPeriod: event.target.value }),
+              },
+              ["day", "week", "month"].map((id) =>
+                h("option", { key: id, value: id }, t("settings.automation." + id)),
+              ),
+            ),
+          ),
+        ),
       );
     }
 
@@ -5194,7 +5959,7 @@ window.__ModuleLoader__.load({
      * the grouping says where the work happened rather than which profile it
      * belonged to.
      */
-    function WorkspaceList({ workspaces, peak, t }) {
+    function WorkspaceList({ workspaces, peak, t, onPick, focused }) {
       if (workspaces.length === 0)
         return h(
           "div",
@@ -5222,7 +5987,18 @@ window.__ModuleLoader__.load({
           workspaces.map((entry) =>
             h(
               "div",
-              { key: entry.cwd, className: "dts-workspace" },
+              {
+                key: entry.cwd,
+                className: "dts-workspace",
+                "data-focused": focused === entry.cwd ? "true" : "false",
+                role: "button",
+                tabIndex: 0,
+                title: String(t("link.focusWorkspace")),
+                onClick: onPick === undefined ? undefined : () => onPick(entry.cwd),
+                onKeyDown: onPick === undefined ? undefined : (event) => {
+                  if (event.key === "Enter") onPick(entry.cwd);
+                },
+              },
               h(
                 "span",
                 { className: "dts-workspacePath", title: entry.cwd },
@@ -5303,7 +6079,7 @@ window.__ModuleLoader__.load({
     }
 
     /** GitHub-style week columns over the range. */
-    function WeekHeatmap({ rows, byDay, peak, t, currency }) {
+    function WeekHeatmap({ rows, byDay, peak, t, currency, onPickDay }) {
       const { wrapRef, tip, show, hide } = useCellTip();
       const weekdayKeys = [
         "heat.weekday.mon",
@@ -5338,6 +6114,16 @@ window.__ModuleLoader__.load({
                   ? undefined
                   : (event) => show(event, key, row),
               onMouseLeave: hide,
+              role: row === undefined ? undefined : "button",
+              tabIndex: row === undefined ? undefined : 0,
+              "aria-label": row === undefined ? undefined : key,
+              title: row === undefined ? undefined : String(t("link.heatmap")),
+              onClick: row === undefined || onPickDay === undefined
+                ? undefined
+                : () => onPickDay(key),
+              onKeyDown: row === undefined || onPickDay === undefined
+                ? undefined
+                : (event) => { if (event.key === "Enter") onPickDay(key); },
             }),
           );
         }
@@ -5393,7 +6179,7 @@ window.__ModuleLoader__.load({
     }
 
     /** One mini calendar per month in the range. */
-    function MonthHeatmap({ rows, byDay, peak, t, currency }) {
+    function MonthHeatmap({ rows, byDay, peak, t, currency, onPickDay }) {
       const { wrapRef, tip, show, hide } = useCellTip();
       if (rows.length === 0)
         return h("div", { className: "dts-empty" }, t("heat.empty"));
@@ -5448,6 +6234,16 @@ window.__ModuleLoader__.load({
                     ? undefined
                     : (event) => show(event, key, row),
                 onMouseLeave: hide,
+                role: row === undefined ? undefined : "button",
+                tabIndex: row === undefined ? undefined : 0,
+                "aria-label": row === undefined ? undefined : key,
+                title: row === undefined ? undefined : String(t("link.heatmap")),
+                onClick: row === undefined || onPickDay === undefined
+                  ? undefined
+                  : () => onPickDay(key),
+                onKeyDown: row === undefined || onPickDay === undefined
+                  ? undefined
+                  : (event) => { if (event.key === "Enter") onPickDay(key); },
               }),
             );
           }
@@ -5878,6 +6674,10 @@ window.__ModuleLoader__.load({
       const [settingsOpen, setSettingsOpen] = useState(false);
       /** The model every card is narrowed to; null means "all models". */
       const [focusModel, setFocusModel] = useState(null);
+      /** P1: a workspace picked from its card; null means all workspaces. */
+      const [focusWorkspace, setFocusWorkspace] = useState(null);
+      /** Transient note shown under the toolbar for one-shot actions. */
+      const [actionNote, setActionNote] = useState("");
       const menuRef = useRef(null);
 
       /**
@@ -5910,6 +6710,17 @@ window.__ModuleLoader__.load({
           setBusy(false);
         }
       }, []);
+
+      // P3: near-real-time refresh. The Host prefix route has no SSE channel,
+      // so a configurable interval polls instead; 0 keeps open-to-refresh.
+      // It sits AFTER load() so the dependency is a stable, already-created
+      // callback rather than a binding still in its temporal dead zone.
+      useEffect(() => {
+        const ms = Number(doc?.pollIntervalMs) || 0;
+        if (ms < 1000) return undefined;
+        const timer = window.setInterval(() => void load(false), ms);
+        return () => window.clearInterval(timer);
+      }, [doc?.pollIntervalMs, load]);
 
       useEffect(() => {
         load(false);
@@ -6287,6 +7098,91 @@ window.__ModuleLoader__.load({
         setMenuOpen(false);
       };
 
+      /** P3/P1: one-shot actions behind the export menu. */
+      const generateReport = async (ext) => {
+        setMenuOpen(false);
+        try {
+          const report = await api.report(doc?.reportPeriod ?? "week");
+          if (report?.ok !== true) {
+            setActionNote(String(report?.error ?? "report unavailable"));
+            return;
+          }
+          // The Host already produced CSV/Markdown-ready data; the text forms
+          // are built here so no extra round trip is paid for a format change.
+          const lines = [
+            `## ${report.period} ${report.from} – ${report.to}`,
+            "",
+            ...(report.highlights ?? []),
+            "",
+            "| input | output | cache read | cache write | total | calls | cost |",
+            "| --- | --- | --- | --- | --- | --- | --- |",
+            `| ${report.totals?.input ?? 0} | ${report.totals?.output ?? 0} | ${report.totals?.cacheRead ?? 0} | ${report.totals?.cacheWrite ?? 0} | ${report.totals?.total ?? 0} | ${report.totals?.calls ?? 0} | ${report.totals?.cost ?? 0} |`,
+            "",
+            "### Top models",
+            ...(report.topModels ?? []).map(([k, v]) => `- ${k}: ${formatInt(v)}`),
+          ];
+          const csv = [
+            "Day,Input,Output,Cache read,Cache write,Total,Calls,Cost",
+            ...(report.days ?? []).map((d) =>
+              [d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7]]
+                .map(csvField)
+                .join(","),
+            ),
+          ].join("\r\n");
+          const period = report.period ?? "week";
+          const span = `${report.from ?? "all"}_${report.to ?? "all"}`;
+          download(
+            ext === "csv"
+              ? `token-panorama-report-${period}-${span}.csv`
+              : `token-panorama-report-${period}-${span}.md`,
+            ext === "csv" ? `\ufeff${csv}\r\n` : lines.join("\n") + "\n",
+            ext === "csv" ? "text/csv;charset=utf-8" : "text/markdown;charset=utf-8",
+          );
+          setActionNote(t("action.report"));
+        } catch (failure) {
+          setActionNote(failure instanceof Error ? failure.message : String(failure));
+        }
+      };
+      const copyTable = () => {
+        setMenuOpen(false);
+        const header = "bucket\tinput\toutput\tcache_read\tcache_write\ttotal\tcalls";
+        const body = exportRows()
+          .map((r) => [r[0], r[1], r[2], r[3], r[4], r[5], r[6]].join("\t"))
+          .join("\n");
+        const text = `${header}\n${body}`;
+        if (navigator?.clipboard?.writeText) {
+          void navigator.clipboard.writeText(text).then(
+            () => setActionNote(t("action.copied")),
+            () => setActionNote(text.slice(0, 80)),
+          );
+        } else {
+          setActionNote(text.slice(0, 80));
+        }
+      };
+      const syncPrices = async () => {
+        setMenuOpen(false);
+        try {
+          const result = await api.priceSync(true);
+          setActionNote(
+            result?.ok === false
+              ? String(result?.error ?? "price sync unavailable")
+              : `${result?.summary?.added ?? 0} added / ${result?.summary?.skipped ?? 0} skipped`,
+          );
+        } catch (failure) {
+          setActionNote(failure instanceof Error ? failure.message : String(failure));
+        }
+      };
+      const rebuild = async () => {
+        setMenuOpen(false);
+        try {
+          await api.clearCache();
+          await load(true);
+          setActionNote(t("action.health"));
+        } catch (failure) {
+          setActionNote(failure instanceof Error ? failure.message : String(failure));
+        }
+      };
+
       const exportCsv = () => {
         // The row arrays carry fifteen columns now, so each one is picked by
         // index rather than joined whole: a `map` over the row would emit the
@@ -6385,6 +7281,31 @@ window.__ModuleLoader__.load({
                     "button",
                     { type: "button", role: "menuitem", onClick: exportJson },
                     t("action.exportJson"),
+                  ),
+                  h(
+                    "button",
+                    { type: "button", role: "menuitem", onClick: () => void generateReport("md") },
+                    t("action.reportMd"),
+                  ),
+                  h(
+                    "button",
+                    { type: "button", role: "menuitem", onClick: () => void generateReport("csv") },
+                    t("action.reportCsv"),
+                  ),
+                  h(
+                    "button",
+                    { type: "button", role: "menuitem", onClick: copyTable },
+                    t("action.copyTable"),
+                  ),
+                  h(
+                    "button",
+                    { type: "button", role: "menuitem", onClick: () => void syncPrices() },
+                    t("action.priceSync"),
+                  ),
+                  h(
+                    "button",
+                    { type: "button", role: "menuitem", onClick: () => void rebuild() },
+                    t("action.health"),
                   ),
                 )
               : null,
@@ -6691,6 +7612,7 @@ window.__ModuleLoader__.load({
               peak: heatPeak,
               t,
               currency: billing.currency,
+              onPickDay: (day) => applyCustom(day, day),
             })
           : h(MonthHeatmap, {
               rows: heatRows,
@@ -6698,6 +7620,7 @@ window.__ModuleLoader__.load({
               peak: heatPeak,
               t,
               currency: billing.currency,
+              onPickDay: (day) => applyCustom(day, day),
             }),
       );
 
@@ -6886,6 +7809,9 @@ window.__ModuleLoader__.load({
               React.Fragment,
               null,
               toolbar,
+              actionNote === ""
+                ? null
+                : h("div", { className: "dts-actionNote", role: "status" }, actionNote),
               budgetLines.length === 0
                 ? null
                 : h(
@@ -6906,13 +7832,30 @@ window.__ModuleLoader__.load({
               stats,
               heatCard,
               trendCard,
+              h(InsightCards, {
+                doc,
+                t,
+                formatInt,
+                cost,
+                currency: billing.currency,
+              }),
+              h(MetricsCard, { doc, t, formatInt, formatCompact }),
               h(SessionList, {
-                sessions,
+                sessions: focusWorkspace === null
+                  ? sessions
+                  : sessions.filter((row) => row.cwd === focusWorkspace),
                 t,
                 onExport: () =>
                   exportSessions(sessions, from, to, billing.currency),
               }),
-              h(WorkspaceList, { workspaces, peak: workspacePeak, t }),
+              h(WorkspaceList, {
+                workspaces,
+                peak: workspacePeak,
+                t,
+                focused: focusWorkspace,
+                onPick: (cwd) =>
+                  setFocusWorkspace((current) => (current === cwd ? null : cwd)),
+              }),
               footer,
               settingsOpen
                 ? h(SettingsModal, {
@@ -7266,7 +8209,7 @@ window.__ModuleLoader__.load({
       inject: ["slots", "locale"],
       apply(ctx) {
         ctx.effect(
-          () => ctx.locale.register(NS, { zh: ZH, en: EN }),
+          () => ctx.locale.register(NS, { zh: ZH, en: EN, ja: JA }),
           "dsh-token-panorama: locale dictionaries",
         );
         const t = ctx.locale.bind(NS);

@@ -105,6 +105,23 @@ const serverEn = entriesOf(dictBlock(server, "EN", ""), 2);
 assertAligned("client.js", clientZh, clientEn);
 assertAligned("lib/i18n.js", serverZh, serverEn);
 
+// Japanese is a fallback locale: it spreads the whole EN dictionary and then
+// overrides only the most visible labels. That spread is load-bearing — without
+// it the third locale would be missing ~300 keys and the platform would render
+// raw key names. Every override must still name a real EN key and keep its
+// placeholders, so a translated sentence never silently drops a value.
+const clientJa = dictBlock(client, "JA", "    ");
+assert.match(clientJa, /\.\.\.EN/, "client.js: JA must spread the full EN dictionary");
+const jaOverrides = entriesOf(clientJa, 6);
+for (const key of jaOverrides.keys()) {
+  assert.ok(clientEn.has(key), `client.js: JA overrides unknown key "${key}"`);
+  assert.deepEqual(
+    placeholdersOf(jaOverrides.get(key)),
+    placeholdersOf(clientEn.get(key)),
+    `client.js: JA "${key}" changes the placeholders`,
+  );
+}
+
 // The split keys are the error envelopes the server translates and the UI
 // strings the client draws; a key in the wrong dictionary is a bug the set
 // comparison above cannot see, so the namespaces each side owns are named
@@ -117,5 +134,5 @@ for (const key of serverZh.keys()) {
 }
 
 console.log(
-  `i18n ok: client ${clientZh.size} keys ×2, server ${serverZh.size} keys ×2`,
+  `i18n ok: client ${clientZh.size} keys ×2, JA ${jaOverrides.size} overrides, server ${serverZh.size} keys ×2`,
 );

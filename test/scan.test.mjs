@@ -128,7 +128,7 @@ assert.deepEqual(
 const damaged = { zone: ZONE, title: "", rows: [["hour", "m", 1, 2, 3, 4, 5, 6], ["hour"]] };
 assert.equal(slotsOf(damaged).length, 1, "a short row must be dropped");
 assert.equal(stateOf({ rows: {} }), undefined, "a non-array rows field is not a state");
-assert.equal(USAGE_STATE_VERSION, 2, "a version bump must be deliberate: it invalidates every stored row");
+assert.equal(USAGE_STATE_VERSION, 3, "a version bump must be deliberate: it invalidates every stored row");
 assert.equal(
   JSON.parse(JSON.stringify(state)).rows.length,
   state.rows.length,
@@ -188,6 +188,14 @@ assert.equal(opens, 2, "new bytes must be retried at once: a repair has to show 
 index.failures.get("session-test").at -= FAILURE_RETRY_MS + 1;
 await index.scan(false);
 assert.equal(opens, 3, "an aged failure must be retried even without a new revision");
+
+// P2: the companion fold must expose the event-level metrics without changing
+// the stable 8-column slot rows.
+const { foldEventsWithMetrics } = await load("lib/scan.js");
+assert.ok(
+  foldEventsWithMetrics([usageEvent(1, 10)], ZONE).metrics.days !== undefined,
+  "foldEventsWithMetrics must return a metrics object with a days key",
+);
 
 rmSync(process.env.DSH_HOME, { recursive: true, force: true });
 console.log("scan ok: frame walk, resume, torn tail, projection fold, negative cache");
