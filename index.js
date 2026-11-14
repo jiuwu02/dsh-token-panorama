@@ -32,6 +32,7 @@ import { toolUsageSummary } from "./lib/ledger.js";
 import { installStatsReset } from "./lib/stats-reset.js";
 import { applyPricePreset, pricePresetCatalog } from "./lib/prices.js";
 import { answerQuestions, shouldDefer } from "./lib/ask.js";
+import { installTimedAsk } from "./lib/timed-ask.js";
 import { buildReport } from "./lib/report.js";
 import {
   fetchPriceCatalog,
@@ -1059,6 +1060,10 @@ export function apply(ctx, config) {
 
   registerAutoCompaction();
   registerAnswerer();
+  // The switch's wait limit has to govern the ask tool call too, not just the
+  // model that tries to answer it. This installs a scoped timed shadow of
+  // ask_user_question for each live agent; see lib/timed-ask.js.
+  installTimedAsk(ctx, { getOptions: askOptions, logger: ctx.logger });
 
   // Both commands share one shape: resolve the agent from the invocation, run
   // the operation, and answer in the transcript. `definitionId` is omitted

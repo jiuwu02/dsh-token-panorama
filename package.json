@@ -1,6 +1,6 @@
 {
   "name": "dsh-token-panorama",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "type": "module",
   "description": "Token panorama for DSH: lifetime totals, cache hit rate and unit cost, peak/off-peak billing, calendar heatmap, trend and efficiency charts, budget alerts and progress, session/workspace/model breakdown, tool self-consumption ledger, runtime metrics, CSV/JSON/Markdown export, periodic reports, price sync, plus context clear/compact, prompt optimization, auto answers, and ja/zh/en locales.",
   "keywords": [
@@ -26,7 +26,7 @@
     "access": "public"
   },
   "scripts": {
-    "test": "node test/i18n.test.mjs && node test/smoke.test.mjs && node test/scan.test.mjs && node test/metrics.test.mjs && node test/stats-reset.test.mjs && node test/segment.test.mjs && node test/truncate.test.mjs && node test/ask.test.mjs && node test/prompts.test.mjs && node test/insights.test.mjs && node test/version.test.mjs && node test/price-sync.test.mjs && node test/report.test.mjs && node test/locale-ja.test.mjs && node test/boot.test.mjs"
+    "test": "node test/i18n.test.mjs && node test/smoke.test.mjs && node test/scan.test.mjs && node test/metrics.test.mjs && node test/stats-reset.test.mjs && node test/segment.test.mjs && node test/truncate.test.mjs && node test/ask.test.mjs && node test/prompts.test.mjs && node test/insights.test.mjs && node test/version.test.mjs && node test/price-sync.test.mjs && node test/report.test.mjs && node test/locale-ja.test.mjs && node test/timed-ask.test.mjs && node test/boot.test.mjs"
   },
   "repository": {
     "type": "git",

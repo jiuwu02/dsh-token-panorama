@@ -361,6 +361,13 @@ forbidden zone, no routable model, an answer that does not parse, a label the qu
 call, the wait limit. The question then reaches you as usual, so a defect here costs a slower card and never a
 lost question.
 
+With the switch on, the wait limit also governs the `ask_user_question` call itself. The plugin shadows that
+tool for each agent with the platform's timed variant, so the foreground wait expires after the same number of
+seconds instead of hanging until you answer. An expired call returns a **pending** result, not a skipped answer:
+the question is projected as *continued*, a card stays in the conversation, and answering it later steers the
+reply into the same turn. This is why a timeout never makes the question disappear. With the switch off, or the
+limit set to `-1`, the shadow delegates to the platform's untimed wait and questions behave exactly as before.
+
 **Never answered, whatever the switch says**: permission and approval prompts, plan reviews (any batch carrying
 an `intent`), credentials and keys, api keys and one-time codes, deletion and anything irreversible, payment and
 purchases, publishing and deployment. The check is a blunt keyword match over the question text and every option

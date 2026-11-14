@@ -372,15 +372,15 @@ window.__ModuleLoader__.load({
       "settings.field.askModel": "代答模型",
       "settings.field.askTimeout": "等待上限（秒）",
       "settings.fieldDesc.askAutoAnswer":
-        "开启后，模型用 ask_user_question 提问时由代答模型先作答，省去你逐条点选；关闭时代答完全不介入，提问照旧弹给你。",
+        "开启后，模型用 ask_user_question 提问时由代答模型先作答，省去你逐条点选；等待上限同时覆盖代答与提问调用，超时后问题仍可回答。关闭时代答完全不介入，提问照旧弹给你。",
       "settings.fieldDesc.askPrompt":
         "代答模型读到的指令，随后附上本轮的全部问题与选项。指令里写清什么该答、什么必须留给你。",
       "settings.fieldDesc.askProvider": "留空则沿用当前会话的 provider。",
       "settings.fieldDesc.askModel": "留空则沿用当前会话的模型。",
       "settings.fieldDesc.askTimeout":
-        "代答模型超过这个秒数还没答完，问题就原样回到你手上；填 -1 表示不限时一直等。",
+        "开启自动代答时，这个秒数同时约束代答模型和 ask_user_question 的等待：到点还没人作答，调用返回「仍待回答」，问题不会消失，你随时可以再答；填 -1 表示不限时一直等。",
       "settings.askTimeoutHint":
-        "与平台 ask_user_question 的口径一致：-1 或 1 到 2147483 之间的整数秒。",
+        "与平台 ask_user_question 的口径一致：-1 或 1 到 2147483 之间的整数秒。超时后问题仍可回答。",
       "settings.ask.guard":
         "涉及权限审批、凭据密钥、不可逆删除、付费与发布的提问，无论开关如何都只留给你，插件不会代答。",
       "settings.placeholder.inherit": "继承会话设置",
@@ -786,15 +786,15 @@ window.__ModuleLoader__.load({
       "settings.field.askModel": "Answering model",
       "settings.field.askTimeout": "Wait limit (seconds)",
       "settings.fieldDesc.askAutoAnswer":
-        "When on, a model's ask_user_question batch is answered by the answering model first, so you are not asked to click through each question; when off, answering never intervenes and every question reaches you as before.",
+        "When on, a model's ask_user_question batch is answered by the answering model first, so you are not asked to click through each question; the wait limit also covers the tool call, and a timed-out question stays answerable. When off, answering never intervenes and every question reaches you as before.",
       "settings.fieldDesc.askPrompt":
         "The instruction the answering model reads, followed by this batch's questions and options. Say in it what may be answered and what must always stay with you.",
       "settings.fieldDesc.askProvider": "Empty inherits the session's provider.",
       "settings.fieldDesc.askModel": "Empty inherits the session's model.",
       "settings.fieldDesc.askTimeout":
-        "If the answering model has not finished within this many seconds the batch goes back to you unchanged; -1 waits with no limit.",
+        "With auto answers on, this limit also bounds the ask_user_question foreground wait: if nobody answers in time the call returns a pending result and the batch stays answerable, so you can still reply later. -1 waits with no limit.",
       "settings.askTimeoutHint":
-        "The same scale ask_user_question uses: -1, or a whole number of seconds from 1 to 2147483.",
+        "The same scale ask_user_question uses: -1, or a whole number of seconds from 1 to 2147483. After a timeout the question is still answerable.",
       "settings.ask.guard":
         "Questions about permission approvals, credentials and keys, irreversible deletion, payment and publishing always stay with you, whatever this switch says. The plugin will not answer them.",
       "settings.placeholder.inherit": "inherit from the session",
