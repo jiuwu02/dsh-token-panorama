@@ -24,7 +24,8 @@ third-party dependency is required.
   and row figures follow the selected date range.
 - **Paging**: 40 session groups per page, so a large history never renders every row at once.
 - **Shared time range**: the filter bar is the one control every card reads (All / Today / Last 24 hours /
-  This week / Last 7 days / This month / Last 30 days, plus a pair of date inputs). The heatmap, trend, cost,
+  This week / Last 7 days / This month / Last 30 days, plus a pair of date inputs), and the panel opens on
+  Today. The heatmap, trend, cost,
   peak, model, session and workspace cards all recompute from the same span.
 - **Hourly axis**: narrowing to Today or Last 24 hours switches the trend card to hours, filling in the quiet
   hours so the line cannot cut across an idle stretch.
@@ -54,6 +55,13 @@ third-party dependency is required.
   the checkpoint reuses the platform's own "context compacted" marker with the item and token counts. A
   `/compact` run folds the command row and the marker into one merged card, like the platform's own compaction.
   Clear replaces the whole surface and therefore needs an idle session.
+- **Chat right-click menu**: right-click any conversation content — your own message, an AI reply,
+  thinking, a tool call, injected context — for a small menu pinned next to the pointer (the platform's
+  shared context-menu component; Shift+F10 and the menu key work too, anchored at the row). Row token
+  usage and cumulative context up to the row, copy as Markdown, quote-and-reply, a raw-event viewer,
+  per-row notes, turn folding, **Delete** (context and view, with a pending-delete **Undo**),
+  **Clear everything above** and **Compact to here**, plus multi-select batch delete. See
+  "Chat right-click menu" below.
 - **Prompt optimization**: an Optimize button in the input box toolbar sends the draft to a configurable
   optimizer model and pastes the rewrite back into the composer; attachments are untouched. The request can
   also carry an excerpt of the session's context, so a prompt that says "this function" rewrites into one that
@@ -344,6 +352,79 @@ The same tab carries three more things about how much window is left:
 Clearing an already-cleared session is a no-op that reports success: rewriting one placeholder with another
 identical one is not an error.
 
+### Chat right-click menu
+
+Right-click any conversation content in the chat for a small menu pinned next to the pointer (the
+platform's shared context-menu component; Shift+F10 and the menu key work too, anchored at the row):
+
+- **Row usage (read-only line)**: the row's own token weight and what the context has accumulated
+  through it, measured by the same meter the panorama page uses. **Context usage up to here** reports
+  the full split in a toast (row / accumulated / share of the surface / total).
+- **Copy as Markdown**: copies the row as clean Markdown — message text under its role, tool calls as
+  fenced argument blocks, tool results as fenced output. Reasoning is deliberately left out (it is the
+  model's internal draft, not the reply).
+- **Quote and reply**: inserts the row into the composer as a platform quote and focuses the input; if
+  the composer declines the quote (busy sending), the text is copied instead.
+- **View raw events**: opens the row's stored log events as pretty-printed JSON, exactly what a reload
+  replays, with a copy button. This is the raw-event inspector of the menu; the Trajectory tab remains
+  the full-session tool.
+- **Collapse this turn / Expand this turn**: folds the clicked row's whole turn — messages, tool rows,
+  retry receipts and the turn's usage tail — into its first surviving row, which grows a
+  "Turn collapsed (n rows) · click to expand" hint. Clicking the row (or choosing Expand) unfolds it.
+  Folding is view-only: nothing touches the context or the log.
+- **Note…**: a per-row note stored on this device only (browser local storage); noted rows grow a 📝
+  marker. Notes never travel to the model or the log.
+- **Compact to here**: summarizes everything **above** the clicked message and keeps the clicked message
+  and everything below verbatim. Same model, prompt and checkpoint card as Compact context; the cut ends
+  at the last balanced position above the row, so the retained side never splits a tool-call/result pair.
+- **Clear everything above (no summary)**: the same cut as Compact to here, but the history is deleted
+  instead of summarized — no model call, no checkpoint card, no ledger row. The rows leave the context
+  and the view exactly like a delete.
+- **Delete**: removes the right-clicked content from the context and the view for good. On the model
+  side, the smallest complete run around the row is rewritten into an empty `system/message`, which
+  the platform projects to no message at all. On the view side, replaced rows normally stay in the
+  transcript by platform design (a compaction marker only reports where the model stopped seeing
+  history), so a delete also hides those rows: the reply's rows, tool rows and retry receipts leave
+  the screen together with their process-group card, in sync. The durable log keeps the shadowed
+  events inspectable ("View raw events" and the session log still show them). Deletion follows
+  tool-call pairing: deleting a tool call also takes its result and the AI reply that issued it (a
+  reply carrying tool calls cannot survive their removal), a multi-call reply is removed whole, and
+  an AI reply takes its own calls and results along. A tool call that is still running cannot be
+  deleted; wait for the turn to finish.
+- **Multi-delete…**: arms a selection mode — click rows to select or deselect (Esc exits), then delete
+  the whole selection in one action. Rows of one reply that expand to the same run are merged; rows
+  between two selections are left alone.
+- **Undo last delete**: undoes deletes that have not taken effect yet. A tombstone may only be
+  recorded inside an open turn and step — anything else makes the stored log refuse to load (the bug
+  class of real corrupted sessions) — so a delete made while no step is open waits in a queue and is
+  written at the start of the next conversation step, and a delete made mid-step lands immediately.
+  Undoing a queued delete restores the rows exactly — no log write, no residue. The delete toast
+  carries an **Undo** button for the same purpose. Once the tombstone has landed the delete is final:
+  the stored format cannot restore a tool result over a tombstone and a replacement can only insert
+  one node, so multi-row runs have no sound way back — the menu says so instead of moving rows around.
+
+The menu only appears on rows the Host can map back to context content: user input, AI replies, thinking,
+tool calls, injected context and compaction cards. Rows built from log-only events — command receipts,
+retry rows, turn errors — keep the browser's native menu, as do links, images and buttons. **Right-click
+on selected text also keeps the native menu** (Copy lives there); click once to clear the selection and
+the row menu appears. Unavailable actions are greyed out in place (nothing above to clear or compact,
+nothing to fold). The deletion scope is spelled out in the label: a tool row reads "Delete the whole
+reply it belongs to" and a compaction card "Delete this compaction summary (history stays compacted)".
+"Compact to here" posts a "Compacting…" notice first, replaced by the outcome toast when the call
+settles or fails.
+
+All actions are direct calls (no command rows) and report their outcome in a toast. The concurrency
+rules match the dock buttons: one context task per session at a time, and a request racing an in-flight
+compaction is refused. Two boundaries are deliberate and documented rather than papered over: a delete
+made while the session is idle is recorded at the start of the next conversation step (the platform
+mints turn and step numbers, and a stored `system/message` must match an open turn and step), so a
+quit before the next turn reverts an idle delete; and deleting a compaction card removes the summary
+only — the history it replaced does not come back. "Regenerate this reply" is not offered: the
+platform's retries are provider-policy driven and expose no user-triggered regeneration, and moving or
+undoing a compaction point is not sound either (a replacement inserts exactly one node, so a
+multi-row history cannot be restored in place) — delete the summary and compact-to-here at another
+row instead.
+
 ### Auto answers
 
 A model that needs a decision calls `ask_user_question` and stops until someone answers. This plugin can answer
@@ -517,6 +598,15 @@ Host/Origin fence (`ctx.connection.requestRejection`) and be `POST` with a JSON 
 | `holidays`   | `{}`                | Force a re-fetch; returns whether it changed and the per-year list. |
 | `clearContext` | `{"sessionId": "..."}` | Replace that session's whole surface with a placeholder. |
 | `compactContext` | `{"sessionId": "..."}` | Summarize that session with a direct model call and replace the surface. |
+| `deleteMessage` | `{"sessionId": "...", "nodeKey": "..."}` | Delete the right-clicked chat row's content (with its paired tool call/result) from the context, replacing the run with an empty system node. |
+| `deleteMessages` | `{"sessionId": "...", "nodeKeys": ["..."]}` | Multi-select batch delete: delete several rows in one action, merging overlapping runs and keeping unselected rows between them. |
+| `clearThrough` | `{"sessionId": "...", "nodeKey": "..."}` | Delete everything above the row without summarizing (the "clear to here" cut), leaving the row and everything below untouched. |
+| `undoDelete` | `{"sessionId": "...", "runIds": ["..."]}` | Drop queued deletes that have not been written yet (`runIds` optional: defaults to the latest delete group). |
+| `rowInfo` | `{"sessionId": "...", "nodeKey": "..."}` | Read-only menu lookup: the row's tokens, cumulative tokens through it, and which actions apply. |
+| `turnRows` | `{"sessionId": "...", "nodeKey": "..."}` | The clicked row's whole turn as row keys (for folding), with representative-row candidates. |
+| `nodeMarkdown` | `{"sessionId": "...", "nodeKey": "..."}` | The row's content rendered as clean Markdown (copy-as-Markdown source). |
+| `nodeEvents` | `{"sessionId": "...", "nodeKey": "..."}` | The row's raw stored log events, for the raw-event viewer. |
+| `compactThrough` | `{"sessionId": "...", "nodeKey": "..."}` | Compact everything above the row into a summary, leaving the row and everything below unchanged. |
 | `contextPressure` | `{"sessionId": "..."}` | Measure one session: total tokens, the system/tools/messages split, the routed model's context window, and the share in use. |
 | `optimizePrompt` | `{"sessionId": "...", "text": "...", "route": {...}}` | Rewrite the composer draft with the optimizer model and return only the rewritten text; `text` is required, `route` is an optional provider/model hint. |
 | `report` | `{"period": "week"}` | Build a day / week / month report from the current snapshot; returns totals, top models, top workspaces and highlights. |

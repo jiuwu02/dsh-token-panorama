@@ -49,11 +49,23 @@ import {
 import {
   agentForSession,
   clearContext,
+  clearThroughNode,
   compactContext,
+  compactThroughNode,
+  deleteChatNode,
+  deleteChatNodes,
+  flushPendingTombstones,
+  hiddenRowKeys,
+  hiddenRowKeysForSession,
   inspectEntryState,
   measureContext,
+  nodeEvents,
+  nodeMarkdown,
   optimizePrompt,
+  rowInfo,
   taskLocksFor,
+  turnRows,
+  undoDelete,
 } from "./lib/contextops.js";
 
 /** The store exposes the aggregated metric fold as a plain snapshot field. */
@@ -423,6 +435,30 @@ export function apply(ctx, config) {
         );
       }
       return typeof next === "function" ? next() : undefined;
+    });
+  };
+
+  /**
+   * Register the landing point for queued delete tombstones.
+   *
+   * A delete made while no step is open waits in `pendingDeletes`; the engine
+   * announcing a `step/start` is the first moment a `system/message` can name
+   * an open turn and step, and it arrives before that step builds its request,
+   * so the deleted run never reaches the model. A composition without
+   * `session/event` keeps working: the runs simply land at the next delete's
+   * own flush.
+   */
+  const registerDeleteFlush = () => {
+    if (typeof ctx.on !== "function") return;
+    ctx.on("session/event", (subject, event) => {
+      if (event?.type !== "step/start") return;
+      try {
+        flushPendingTombstones(ctx, subject);
+      } catch (error) {
+        ctx.logger?.warn?.(
+          `dsh-token-panorama: queued delete flush failed: ${String(error)}`,
+        );
+      }
     });
   };
 
@@ -1059,6 +1095,7 @@ export function apply(ctx, config) {
   };
 
   registerAutoCompaction();
+  registerDeleteFlush();
   registerAnswerer();
   // The switch's wait limit has to govern the ask tool call too, not just the
   // model that tries to answer it. This installs a scoped timed shadow of
@@ -1230,6 +1267,181 @@ export function apply(ctx, config) {
                 ok: true,
                 value: { ok: outcome.ok, result: outcome.text },
               });
+              return;
+            }
+            if (method === "deleteMessage" || method === "compactThrough") {
+              // The chat's right-click menu. Like the optimizer button this is
+              // a direct call rather than a command replay: the rewrite is
+              // already visible on its own — the rows vanish for a delete, the
+              // checkpoint card appears for a compaction — so a command row
+              // would only repeat what the view already shows. The outcome
+              // travels back as counts for the menu's toast.
+              if (typeof body.nodeKey !== "string" || body.nodeKey === "") {
+                writeJson(res, 400, {
+                  ok: false,
+                  error: {
+                    code: "invalid",
+                    message: t("api.nodeKeyRequired"),
+                  },
+                });
+                return;
+              }
+              const agent = agentForSession(ctx, body.sessionId);
+              if (agent === undefined) {
+                writeJson(res, 404, {
+                  ok: false,
+                  error: {
+                    code: "no-session",
+                    message: t("api.noAgent"),
+                  },
+                });
+                return;
+              }
+              const value =
+                method === "deleteMessage"
+                  ? await deleteChatNode(ctx, agent, { nodeKey: body.nodeKey })
+                  : await compactThroughNode(ctx, agent, {
+                      nodeKey: body.nodeKey,
+                    });
+              writeJson(res, 200, { ok: true, value });
+              return;
+            }
+            if (method === "hiddenRows") {
+              // The rows past deletes hide from the transcript. A live session
+              // is read from its in-memory log — the durable copy can trail a
+              // just-landed delete by a write-behind beat — and everything
+              // else falls back to the stored log.
+              const agent = agentForSession(ctx, body.sessionId);
+              if (agent !== undefined) {
+                writeJson(res, 200, {
+                  ok: true,
+                  value: { keys: hiddenRowKeysForSession(agent.session) },
+                });
+                return;
+              }
+              const persistence = ctx.get("sessionPersistence");
+              const handle =
+                persistence === undefined
+                  ? undefined
+                  : await persistence.open(body.sessionId, "read");
+              if (handle === undefined) {
+                writeJson(res, 404, {
+                  ok: false,
+                  error: { code: "no-session", message: t("api.noAgent") },
+                });
+                return;
+              }
+              try {
+                const slice = await handle.read(0, Number.MAX_SAFE_INTEGER);
+                writeJson(res, 200, {
+                  ok: true,
+                  value: { keys: hiddenRowKeys(slice?.events ?? []) },
+                });
+              } finally {
+                try {
+                  await handle.close();
+                } catch {
+                  /* a read handle that refuses to close costs nothing here */
+                }
+              }
+              return;
+            }
+            if (
+              method === "clearThrough" ||
+              method === "deleteMessages" ||
+              method === "undoDelete"
+            ) {
+              // The chat's right-click menu, extended: clearing everything
+              // above a row, deleting a multi-selection in one action, and
+              // undoing a delete whose tombstone has not landed yet. Same
+              // direct-call shape as deleteMessage — the rewrite is already
+              // visible on its own, so a command row would only repeat what
+              // the view already shows.
+              const nodeKeys =
+                method === "deleteMessages"
+                  ? (Array.isArray(body.nodeKeys) ? body.nodeKeys : []).filter(
+                      (key) => typeof key === "string" && key !== "",
+                    )
+                  : typeof body.nodeKey === "string" && body.nodeKey !== ""
+                    ? [body.nodeKey]
+                    : null;
+              if (
+                method !== "undoDelete" &&
+                (nodeKeys === null || nodeKeys.length === 0)
+              ) {
+                writeJson(res, 400, {
+                  ok: false,
+                  error: {
+                    code: "invalid",
+                    message: t("api.nodeKeyRequired"),
+                  },
+                });
+                return;
+              }
+              const agent = agentForSession(ctx, body.sessionId);
+              if (agent === undefined) {
+                writeJson(res, 404, {
+                  ok: false,
+                  error: {
+                    code: "no-session",
+                    message: t("api.noAgent"),
+                  },
+                });
+                return;
+              }
+              const value =
+                method === "clearThrough"
+                  ? await clearThroughNode(ctx, agent, { nodeKey: nodeKeys[0] })
+                  : method === "deleteMessages"
+                    ? await deleteChatNodes(ctx, agent, { nodeKeys })
+                    : await undoDelete(ctx, agent, {
+                        runIds: Array.isArray(body.runIds)
+                          ? body.runIds
+                          : undefined,
+                      });
+              writeJson(res, 200, { ok: true, value });
+              return;
+            }
+            if (
+              method === "rowInfo" ||
+              method === "turnRows" ||
+              method === "nodeMarkdown" ||
+              method === "nodeEvents"
+            ) {
+              // Read-only lookups for the row menu: the token numbers the
+              // popup shows, the turn's row set for folding, the Markdown
+              // copy and the raw-event dialog. These answer from the live
+              // surface the view is rendering, so a loaded agent is required.
+              if (typeof body.nodeKey !== "string" || body.nodeKey === "") {
+                writeJson(res, 400, {
+                  ok: false,
+                  error: {
+                    code: "invalid",
+                    message: t("api.nodeKeyRequired"),
+                  },
+                });
+                return;
+              }
+              const agent = agentForSession(ctx, body.sessionId);
+              if (agent === undefined) {
+                writeJson(res, 404, {
+                  ok: false,
+                  error: {
+                    code: "no-session",
+                    message: t("api.noAgent"),
+                  },
+                });
+                return;
+              }
+              const value =
+                method === "rowInfo"
+                  ? rowInfo(ctx, agent.session, body.nodeKey)
+                  : method === "turnRows"
+                    ? turnRows(agent.session, body.nodeKey)
+                    : method === "nodeMarkdown"
+                      ? nodeMarkdown(agent.session, body.nodeKey)
+                      : nodeEvents(agent.session, body.nodeKey);
+              writeJson(res, 200, { ok: true, value });
               return;
             }
             if (method === "contextPressure") {

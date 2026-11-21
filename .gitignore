@@ -6,8 +6,7 @@ Thumbs.db
 .vscode/
 .idea/
 *.tgz
-plain-tmp/
-.tmp-asar/
 .tmp-test/
 .mnemon/
 .npm-cache-local/
+.npm-cache/

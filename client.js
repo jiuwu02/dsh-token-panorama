@@ -257,6 +257,57 @@ window.__ModuleLoader__.load({
       "context.compact": "压缩上下文",
       "context.compact.hint":
         "用一次直接的模型调用把已完成的历史压缩成一条摘要。会话运行中也能用：压缩期间新产生的对话原样保留，接在摘要之后。",
+      "menu.delete": "删除",
+      "menu.compactThrough": "压缩至此",
+      "menu.deleteReply": "删除所属整条回复",
+      "menu.deleteSummary": "删除这条压缩摘要（历史不还原）",
+      "menu.compactWorking": "正在压缩，请稍候…",
+      "menu.deleteDone": "已删除 {items} 条内容（约 {before} tokens）。",
+      "menu.deleteEmpty": "这条内容已不在上下文中，无需删除。",
+      "menu.compactDone":
+        "已把这条消息以上的 {items} 条历史压缩为摘要（{before} → {after} tokens）。",
+      "menu.compactEmpty": "这条消息以上没有可压缩的历史。",
+      "menu.deleteFailed": "删除失败",
+      "menu.compactFailed": "压缩失败",
+      "menu.clearThrough": "清空至此以上（不生成摘要）",
+      "menu.clearDone": "已清空 {items} 条内容（约 {before} tokens）。",
+      "menu.clearEmpty": "这条消息以上没有可清空的历史。",
+      "menu.clearFailed": "清空失败",
+      "menu.copyMarkdown": "复制为 Markdown",
+      "menu.copyDone": "已复制（{chars} 字符）。",
+      "menu.copyFailed": "复制失败",
+      "menu.quoteReply": "引用并回复",
+      "menu.quoteDone": "已引用到输入框。",
+      "menu.quoteFallback": "已复制引用文本，请粘贴到输入框。",
+      "menu.viewRaw": "查看原始事件",
+      "menu.rawTitle": "原始事件",
+      "menu.rawCopy": "复制 JSON",
+      "menu.close": "关闭",
+      "menu.collapseTurn": "折叠本轮",
+      "menu.expandTurn": "展开本轮",
+      "menu.collapsedHint": "本轮已折叠（{rows} 行）· 点击展开",
+      "menu.multiSelect": "多选删除…",
+      "menu.multiHint": "多选删除：点击行选择或取消，然后点下方按钮；按 Esc 退出。",
+      "menu.multiCount": "已选 {n} 行",
+      "menu.multiDelete": "删除选中",
+      "menu.multiCancel": "退出多选",
+      "menu.multiEmpty": "没有选中任何行。",
+      "menu.undo": "撤销上次删除",
+      "menu.undoAction": "撤销",
+      "menu.undoFailed": "撤销失败",
+      "menu.undoDone": "已撤销 {items} 条内容的删除。",
+      "menu.note": "备注…",
+      "menu.noteTitle": "备注（仅保存在本机）",
+      "menu.notePlaceholder": "给这条内容写点备注…",
+      "menu.noteSave": "保存",
+      "menu.noteRemove": "删除备注",
+      "menu.noteSaved": "备注已保存。",
+      "menu.noteCleared": "备注已删除。",
+      "menu.stats": "统计",
+      "menu.rowUsage": "本条 ≈ {row} tokens · 至此累计 {upto}",
+      "menu.usageOpen": "查看此处的上下文占用",
+      "menu.usageLine":
+        "本条 ≈ {row} tokens；到这里累计 ≈ {upto}（约占 {percent}%），全部 ≈ {total}。",
       "optimize.button": "优化提示词",
       "optimize.hint":
         "把输入框里的提示词交给优化模型改写：目标更明确、约束更完整，只改提示词本身，不动附件与图片。",
@@ -665,6 +716,58 @@ window.__ModuleLoader__.load({
       "context.compact": "Compact context",
       "context.compact.hint":
         "Compress the completed history into one summary with a direct model call. Works mid-conversation: whatever the session writes while it runs stays verbatim behind the summary.",
+      "menu.delete": "Delete",
+      "menu.compactThrough": "Compact to here",
+      "menu.deleteReply": "Delete the whole reply it belongs to",
+      "menu.deleteSummary": "Delete this compaction summary (history stays compacted)",
+      "menu.compactWorking": "Compacting…",
+      "menu.deleteDone": "Deleted {items} entries (about {before} tokens).",
+      "menu.deleteEmpty": "This content is no longer in the context; nothing to delete.",
+      "menu.compactDone":
+        "Compacted the {items} entries above this message into a summary ({before} → {after} tokens).",
+      "menu.compactEmpty": "There is no history above this message to compact.",
+      "menu.deleteFailed": "Delete failed",
+      "menu.compactFailed": "Compaction failed",
+      "menu.clearThrough": "Clear everything above (no summary)",
+      "menu.clearDone": "Cleared {items} entries (about {before} tokens).",
+      "menu.clearEmpty": "There is no history above this message to clear.",
+      "menu.clearFailed": "Clear failed",
+      "menu.copyMarkdown": "Copy as Markdown",
+      "menu.copyDone": "Copied ({chars} characters).",
+      "menu.copyFailed": "Copy failed",
+      "menu.quoteReply": "Quote and reply",
+      "menu.quoteDone": "Quoted into the composer.",
+      "menu.quoteFallback": "Quote copied; paste it into the composer.",
+      "menu.viewRaw": "View raw events",
+      "menu.rawTitle": "Raw events",
+      "menu.rawCopy": "Copy JSON",
+      "menu.close": "Close",
+      "menu.collapseTurn": "Collapse this turn",
+      "menu.expandTurn": "Expand this turn",
+      "menu.collapsedHint": "Turn collapsed ({rows} rows) · click to expand",
+      "menu.multiSelect": "Multi-delete…",
+      "menu.multiHint":
+        "Multi-delete: click rows to select or deselect, then use the bar below; Esc exits.",
+      "menu.multiCount": "{n} selected",
+      "menu.multiDelete": "Delete selected",
+      "menu.multiCancel": "Exit multi-select",
+      "menu.multiEmpty": "No rows selected.",
+      "menu.undo": "Undo last delete",
+      "menu.undoAction": "Undo",
+      "menu.undoFailed": "Undo failed",
+      "menu.undoDone": "Restored {items} entries.",
+      "menu.note": "Note…",
+      "menu.noteTitle": "Note (stored on this device)",
+      "menu.notePlaceholder": "Write a note about this entry…",
+      "menu.noteSave": "Save",
+      "menu.noteRemove": "Remove note",
+      "menu.noteSaved": "Note saved.",
+      "menu.noteCleared": "Note removed.",
+      "menu.stats": "Statistics",
+      "menu.rowUsage": "≈ {row} tokens here · {upto} accumulated",
+      "menu.usageOpen": "Context usage up to here",
+      "menu.usageLine":
+        "This row ≈ {row} tokens; accumulated to here ≈ {upto} (about {percent}% of the context); all ≈ {total}.",
       "optimize.button": "Optimize prompt",
       "optimize.hint":
         "Send the draft in the input box to the optimizer model: a clearer goal, fuller constraints. Only the prompt text changes; attachments and images are untouched.",
@@ -1054,6 +1157,28 @@ window.__ModuleLoader__.load({
       "settings.tab.context": "コンテキスト",
       "settings.tab.optimizer": "プロンプト最適化",
       "settings.tab.ask": "自動回答",
+      "menu.delete": "削除",
+      "menu.compactThrough": "ここまでを圧縮",
+      "menu.deleteReply": "所属する返信全体を削除",
+      "menu.deleteSummary": "この圧縮要約を削除（履歴は復元されません）",
+      "menu.compactWorking": "圧縮中…",
+      "menu.clearThrough": "上をすべてクリア（要約なし）",
+      "menu.copyMarkdown": "Markdown としてコピー",
+      "menu.quoteReply": "引用して返信",
+      "menu.viewRaw": "生イベントを表示",
+      "menu.collapseTurn": "このターンを折りたたむ",
+      "menu.expandTurn": "このターンを展開",
+      "menu.multiSelect": "複数削除…",
+      "menu.multiDelete": "選択を削除",
+      "menu.multiCancel": "複数選択を終了",
+      "menu.undo": "最後の削除を取り消す",
+      "menu.undoAction": "取り消す",
+      "menu.undoFailed": "取り消しに失敗しました",
+      "menu.note": "メモ…",
+      "menu.noteSave": "保存",
+      "menu.noteRemove": "メモを削除",
+      "menu.stats": "統計",
+      "menu.usageOpen": "ここまでのコンテキスト使用量",
       "range.all": "すべて",
       "range.today": "今日",
       "range.24h": "直近24時間",
@@ -1485,7 +1610,711 @@ window.__ModuleLoader__.load({
         post("token-stats/api/priceSync", { onlyMissing }),
       budgetAction: (sessionId) =>
         post("token-stats/api/budgetAction", { sessionId }),
+      deleteMessage: (sessionId, nodeKey) =>
+        post("token-stats/api/deleteMessage", { sessionId, nodeKey }),
+      compactThrough: (sessionId, nodeKey) =>
+        post("token-stats/api/compactThrough", { sessionId, nodeKey }),
+      hiddenRows: (sessionId) =>
+        post("token-stats/api/hiddenRows", { sessionId }),
+      clearThrough: (sessionId, nodeKey) =>
+        post("token-stats/api/clearThrough", { sessionId, nodeKey }),
+      deleteMessages: (sessionId, nodeKeys) =>
+        post("token-stats/api/deleteMessages", { sessionId, nodeKeys }),
+      undoDelete: (sessionId, runIds) =>
+        post("token-stats/api/undoDelete", {
+          sessionId,
+          ...(Array.isArray(runIds) ? { runIds } : {}),
+        }),
+      rowInfo: (sessionId, nodeKey) =>
+        post("token-stats/api/rowInfo", { sessionId, nodeKey }),
+      turnRows: (sessionId, nodeKey) =>
+        post("token-stats/api/turnRows", { sessionId, nodeKey }),
+      nodeMarkdown: (sessionId, nodeKey) =>
+        post("token-stats/api/nodeMarkdown", { sessionId, nodeKey }),
+      nodeEvents: (sessionId, nodeKey) =>
+        post("token-stats/api/nodeEvents", { sessionId, nodeKey }),
     };
+
+    //#endregion
+
+    //#region hidden chat rows
+
+    /**
+     * The rows past deletes hide from the transcript, per session.
+     *
+     * The transcript is the durable log: a replaced row stays visible by
+     * platform design (a compaction marker reports where the model stopped
+     * seeing history, it does not remove it). A delete therefore hides its
+     * rows on the view side — the Host answers which `data-chat-node-key`
+     * values its tombstones shadow, and these rules take them out of the
+     * layout. The log itself keeps the events.
+     */
+    const hiddenRowKeysBySession = new Map();
+    let hiddenRowStyle = null;
+
+    /**
+     * Turns folded to one row, per session, keyed by turn number.
+     *
+     * Folding is view-side only and needs no Host cooperation beyond the
+     * turn's row keys: the hide rules are the delete mechanism's, minus the
+     * representative row that keeps the turn reachable. The map holds the
+     * keys to hide and the representative so expanding reverses exactly what
+     * folding applied — deletes stay hidden either way, because the two sets
+     * are kept apart and only unioned when the stylesheet is rebuilt.
+     * @type {Map<string, Map<number, {keys: Set<string>, keepKey: string, rows: number}>>}
+     */
+    const collapsedTurnsBySession = new Map();
+
+    /**
+     * Rows picked in multi-select mode, per session: only the highlight
+     * rules depend on it, and only the delete button reads it.
+     * @type {Map<string, Set<string>>}
+     */
+    const selectedRowKeysBySession = new Map();
+
+    /** Notes per session, keyed by row key, persisted on this device only. */
+    const notesBySession = new Map();
+
+    /** The localStorage key one session's notes live under. */
+    const notesStorageKey = (sessionId) => `dts-row-notes:${sessionId}`;
+
+    /** Read one session's notes from local storage. */
+    function loadRowNotes(sessionId) {
+      if (notesBySession.has(sessionId)) return notesBySession.get(sessionId);
+      const notes = new Map();
+      try {
+        const raw = window.localStorage.getItem(notesStorageKey(sessionId));
+        for (const [key, text] of Object.entries(
+          raw === null ? {} : JSON.parse(raw),
+        )) {
+          if (typeof text === "string" && text !== "") notes.set(key, text);
+        }
+      } catch {
+        /* an unreadable store behaves like no notes */
+      }
+      notesBySession.set(sessionId, notes);
+      return notes;
+    }
+
+    /** Persist one session's notes to local storage. */
+    function saveRowNotes(sessionId) {
+      try {
+        const notes = notesBySession.get(sessionId) ?? new Map();
+        window.localStorage.setItem(
+          notesStorageKey(sessionId),
+          JSON.stringify(Object.fromEntries(notes)),
+        );
+      } catch {
+        /* a full or blocked store loses the note, not the conversation */
+      }
+    }
+
+    /** Escape a value for a quoted attribute selector. */
+    const escapeAttr = (value) => String(value).replace(/["\\]/g, "\\$&");
+
+    /** Rewrite the hide stylesheet from the current per-session key sets. */
+    function renderHiddenRowRules() {
+      if (hiddenRowStyle === null || !hiddenRowStyle.isConnected) {
+        hiddenRowStyle = document.createElement("style");
+        hiddenRowStyle.dataset.dshPlugin = PANEL_ID;
+        hiddenRowStyle.dataset.dshHiddenRows = "";
+        document.head.appendChild(hiddenRowStyle);
+      }
+      const rules = [];
+      const hideSessions = new Set([
+        ...hiddenRowKeysBySession.keys(),
+        ...collapsedTurnsBySession.keys(),
+      ]);
+      for (const sessionId of hideSessions) {
+        // Folded turns contribute their keys too, minus each turn's
+        // representative row, which stays visible as the fold's handle.
+        const hidden = new Set(hiddenRowKeysBySession.get(sessionId) ?? []);
+        for (const turn of collapsedTurnsBySession.get(sessionId)?.values() ??
+          []) {
+          for (const key of turn.keys) {
+            if (key !== turn.keepKey) hidden.add(key);
+          }
+        }
+        if (hidden.size === 0) continue;
+        const scope = `[data-conversation-session="${escapeAttr(sessionId)}"]`;
+        const list = [...hidden].map(
+          (key) => `[data-chat-node-key="${escapeAttr(key)}"]`,
+        );
+        rules.push(`${scope} ${list.join(",")}{display:none!important}`);
+        // A process group whose every row is hidden takes its header with it:
+        // without this the emptied group card would outlive its members. Only
+        // sessions with hidden rows pay for the :has() walk.
+        rules.push(
+          `${scope} [data-chat-group-key]:not(:has([data-chat-node-key]:not(${list.join(",")}))) {display:none!important}`,
+        );
+      }
+      // Fold hints and note markers: pure CSS content on rows that already
+      // exist, so React re-renders cannot evict them. Folded turns of a
+      // session with no deleted rows still need their hint, so this loop is
+      // independent of the hide loop above.
+      for (const [sessionId, turns] of collapsedTurnsBySession) {
+        const scope = `[data-conversation-session="${escapeAttr(sessionId)}"]`;
+        for (const turn of turns.values()) {
+          const hint = tr("menu.collapsedHint").replace(
+            "{rows}",
+            String(turn.rows),
+          );
+          rules.push(
+            `${scope} [data-chat-node-key="${escapeAttr(turn.keepKey)}"]::after{content:${JSON.stringify(hint)};display:block;margin-top:6px;padding:4px 10px;border:1px dashed var(--dsw-alias-border-l2);border-radius:8px;color:var(--dsw-alias-label-secondary);font-size:12px;cursor:pointer}`,
+          );
+        }
+      }
+      for (const [sessionId, notes] of notesBySession) {
+        const scope = `[data-conversation-session="${escapeAttr(sessionId)}"]`;
+        for (const key of notes.keys()) {
+          rules.push(
+            `${scope} [data-chat-node-key="${escapeAttr(key)}"]::before{content:"📝";display:inline-block;margin-inline-end:6px;opacity:.85}`,
+          );
+        }
+      }
+      for (const [sessionId, keys] of selectedRowKeysBySession) {
+        const scope = `[data-conversation-session="${escapeAttr(sessionId)}"]`;
+        for (const key of keys) {
+          rules.push(
+            `${scope} [data-chat-node-key="${escapeAttr(key)}"]{outline:2px solid var(--dsw-alias-brand-primary)!important;outline-offset:2px!important;border-radius:8px}`,
+          );
+        }
+      }
+      hiddenRowStyle.textContent = rules.join("\n");
+    }
+
+    /**
+     * Record one session's hidden row keys.
+     * @param sessionId - the session the rows belong to.
+     * @param keys - row keys to hide; `merge` keeps the ones already known.
+     * @param merge - whether to extend rather than replace the set.
+     */
+    function setHiddenRowKeys(sessionId, keys, merge) {
+      if (typeof sessionId !== "string" || sessionId === "") return;
+      const next = merge
+        ? new Set(hiddenRowKeysBySession.get(sessionId) ?? [])
+        : new Set();
+      for (const key of keys) {
+        if (typeof key === "string" && key !== "") next.add(key);
+      }
+      if (next.size === 0) hiddenRowKeysBySession.delete(sessionId);
+      else hiddenRowKeysBySession.set(sessionId, next);
+      renderHiddenRowRules();
+    }
+
+    /** Drop one session's hide rules when its view goes away. */
+    function clearHiddenRowKeys(sessionId) {
+      hiddenRowKeysBySession.delete(sessionId);
+      renderHiddenRowRules();
+    }
+
+    /**
+     * Fold one turn to a single representative row.
+     * @param sessionId - the session the turn belongs to.
+     * @param turn - the turn number.
+     * @param keys - every row key of the turn.
+     * @param keepKey - the representative that stays visible.
+     */
+    function setCollapsedTurn(sessionId, turn, keys, keepKey) {
+      const turns = collapsedTurnsBySession.get(sessionId) ?? new Map();
+      turns.set(turn, { keys: new Set(keys), keepKey, rows: keys.length + 1 });
+      collapsedTurnsBySession.set(sessionId, turns);
+      renderHiddenRowRules();
+    }
+
+    /**
+     * Unfold one turn (or every turn of a session).
+     * @param sessionId - the session the turn belongs to.
+     * @param turn - the turn number, or null for all of them.
+     */
+    function clearCollapsedTurn(sessionId, turn) {
+      const turns = collapsedTurnsBySession.get(sessionId);
+      if (turns === undefined) return;
+      if (turn === null || turn === undefined) {
+        collapsedTurnsBySession.delete(sessionId);
+      } else {
+        turns.delete(turn);
+        if (turns.size === 0) collapsedTurnsBySession.delete(sessionId);
+      }
+      renderHiddenRowRules();
+    }
+
+    /** The folded turn one row key currently stands for, or null. */
+    function collapsedTurnOf(sessionId, nodeKey) {
+      for (const [turn, entry] of
+        collapsedTurnsBySession.get(sessionId)?.entries() ?? []) {
+        if (entry.keepKey === nodeKey) return turn;
+      }
+      return null;
+    }
+
+    /**
+     * Replace one session's multi-select highlight.
+     * @param sessionId - the session the rows belong to.
+     * @param keys - the selected row keys; empty clears the mode.
+     */
+    function setSelectedRowKeys(sessionId, keys) {
+      const next = new Set(keys);
+      if (next.size === 0) selectedRowKeysBySession.delete(sessionId);
+      else selectedRowKeysBySession.set(sessionId, next);
+      renderHiddenRowRules();
+    }
+
+    //#endregion
+
+    //#region chat row menu
+
+    /**
+     * The target family this plugin contributes to the shared context menu.
+     *
+     * The menu plugin keys contributions by a `{ kind, value }` target and
+     * dispatches `resolve` for the family of whatever `open` was called with,
+     * so a plugin-owned family names both the registration and the gesture.
+     */
+    const CHAT_ROW_MENU_TARGET = "dsh-token-panorama.chat-row";
+
+    /**
+     * Chat row kinds whose rows stand for model-visible context.
+     *
+     * The mapping from a row key to surface events mirrors the chat's own
+     * node Definitions: input messages (user, steering, injected context,
+     * turn triggers), assistant steps, tool calls, the unknown-surface
+     * fallback, and the two compaction cards. Rows built from log-only events
+     * — command receipts, retry rows, turn errors — are deliberately absent:
+     * deleting one could not change the model's context, and offering the
+     * action anyway would only fail at the Host.
+     */
+    const MENU_FLOW_KINDS = new Set([
+      "user",
+      "steering",
+      "context",
+      "turn-trigger",
+      "assistant-step",
+      "tool-call",
+      "unknown",
+      "compaction",
+      "manual-compaction",
+    ]);
+
+    /**
+     * Interactive chrome that keeps the browser's own context menu.
+     *
+     * Links and images forward their right-click to the platform's menu,
+     * reference chips (and their span form, which the platform leaves native)
+     * do the same, buttons and editors own their gestures, and the chat marks
+     * the rest of its own exclusions. Plain message prose — including code
+     * blocks — falls through to the row menu.
+     */
+    const MENU_SKIP_SELECTOR =
+      'a, button, input, textarea, select, [contenteditable="true"], [role="button"], [role="link"], [data-text-interaction-exclude], [data-ref-chip], img, video, audio, svg, canvas';
+
+    /**
+     * Copy text to the clipboard, with a textarea fallback for hosts where
+     * the async clipboard API is unavailable.
+     * @param text - the text to copy.
+     * @returns whether the copy landed.
+     */
+    async function copyToClipboard(text) {
+      try {
+        if (navigator.clipboard?.writeText !== undefined) {
+          await navigator.clipboard.writeText(text);
+          return true;
+        }
+      } catch {
+        /* fall through to the legacy path */
+      }
+      try {
+        const area = document.createElement("textarea");
+        area.value = text;
+        area.style.position = "fixed";
+        area.style.opacity = "0";
+        document.body.appendChild(area);
+        area.select();
+        const done = document.execCommand("copy");
+        area.remove();
+        return done;
+      } catch {
+        return false;
+      }
+    }
+
+    /**
+     * The composer's input facade for one session, when the conversation
+     * service exposes it. The facade is per session and reached through the
+     * session binding; an unbound session falls back to the plugin context.
+     */
+    function composerFor(ctx, sessionId) {
+      try {
+        const conversation = ctx.get?.("conversation");
+        if (conversation?.input?.for === undefined) return undefined;
+        const binding = ctx.get?.("sessions")?.binding?.(sessionId);
+        return conversation.input.for(binding?.ctx ?? ctx);
+      } catch {
+        return undefined;
+      }
+    }
+
+    // --- row overlay modals -------------------------------------------------
+
+    let rowOverlayStyle = null;
+
+    /** Inject the small stylesheet the row modals use, once. */
+    function ensureRowOverlayStyle() {
+      if (rowOverlayStyle !== null && rowOverlayStyle.isConnected) return;
+      rowOverlayStyle = document.createElement("style");
+      rowOverlayStyle.dataset.dshPlugin = PANEL_ID;
+      rowOverlayStyle.dataset.dshRowOverlay = "";
+      rowOverlayStyle.textContent = [
+        ".dts-rowBackdrop{position:fixed;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;padding:24px;background:rgb(0 0 0 / 45%)}",
+        ".dts-rowModal{display:flex;flex-direction:column;width:min(720px,100%);max-height:min(80vh,720px);border:1px solid var(--dsw-alias-border-l2);border-radius:14px;background:var(--dsw-alias-bg-base);box-shadow:0 24px 64px rgb(0 0 0 / 32%);color:var(--dsw-alias-label-primary)}",
+        ".dts-rowModalHead{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:1px solid var(--dsw-alias-border-l1)}",
+        ".dts-rowModalTitle{font-size:14px;font-weight:500}",
+        ".dts-rowModalBody{flex:1;min-height:0;overflow:auto;padding:14px 18px;font-size:12px;line-height:19px}",
+        ".dts-rowModalFoot{display:flex;justify-content:flex-end;gap:8px;padding:12px 18px;border-top:1px solid var(--dsw-alias-border-l1)}",
+        ".dts-rowModalBody pre{margin:0;white-space:pre-wrap;word-break:break-all;font-family:ui-monospace,Consolas,monospace}",
+        ".dts-rowModal textarea{width:100%;min-height:120px;box-sizing:border-box;padding:10px;border:1px solid var(--dsw-alias-border-l2);border-radius:8px;background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-primary);font:inherit;font-size:13px;resize:vertical}",
+        ".dts-rowModal button{padding:5px 14px;border-radius:8px;border:1px solid var(--dsw-alias-border-l2);background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-primary);font:inherit;font-size:12px;cursor:pointer}",
+        ".dts-rowModal button:hover{background:var(--dsw-alias-bg-layer-2)}",
+      ].join("\n");
+      document.head.appendChild(rowOverlayStyle);
+    }
+
+    /**
+     * Open a body-level modal outside the chat's React tree.
+     * @param title - the modal title.
+     * @param body - the scrollable body element.
+     * @param footer - footer buttons, each `{ label, primary, run }`; `run`
+     *   returning true closes the modal.
+     * @returns a function that closes the modal.
+     */
+    function openRowModal(title, body, footer) {
+      ensureRowOverlayStyle();
+      const backdrop = document.createElement("div");
+      backdrop.className = "dts-rowBackdrop";
+      const modal = document.createElement("div");
+      modal.className = "dts-rowModal";
+      const head = document.createElement("div");
+      head.className = "dts-rowModalHead";
+      const label = document.createElement("div");
+      label.className = "dts-rowModalTitle";
+      label.textContent = title;
+      const close = document.createElement("button");
+      close.textContent = tr("menu.close");
+      head.append(label, close);
+      const foot = document.createElement("div");
+      foot.className = "dts-rowModalFoot";
+      modal.append(head, body, foot);
+      backdrop.appendChild(modal);
+      const dismiss = () => {
+        document.removeEventListener("keydown", onKey, true);
+        backdrop.remove();
+      };
+      const onKey = (event) => {
+        if (event.key === "Escape") {
+          event.preventDefault();
+          dismiss();
+        }
+      };
+      close.addEventListener("click", dismiss);
+      backdrop.addEventListener("click", (event) => {
+        if (event.target === backdrop) dismiss();
+      });
+      for (const spec of footer ?? []) {
+        const button = document.createElement("button");
+        button.textContent = spec.label;
+        if (spec.primary === true) {
+          button.style.borderColor = "var(--dsw-alias-brand-primary)";
+          button.style.color = "var(--dsw-alias-brand-primary)";
+        }
+        button.addEventListener("click", async () => {
+          const done = await spec.run();
+          if (done !== false) dismiss();
+        });
+        foot.appendChild(button);
+      }
+      document.addEventListener("keydown", onKey, true);
+      document.body.appendChild(backdrop);
+      return dismiss;
+    }
+
+    /** Show one row's raw log events in a modal, with a JSON copy button. */
+    function showRawEvents(title, events) {
+      const body = document.createElement("div");
+      body.className = "dts-rowModalBody";
+      const pre = document.createElement("pre");
+      pre.textContent = JSON.stringify(events, null, 2);
+      body.appendChild(pre);
+      openRowModal(title, body, [
+        {
+          label: tr("menu.rawCopy"),
+          primary: true,
+          run: async () => {
+            await copyToClipboard(pre.textContent ?? "");
+            return true;
+          },
+        },
+      ]);
+    }
+
+    /** Open the note editor for one row. */
+    function openNoteModal(ctx, value) {
+      const notes = loadRowNotes(value.sessionId);
+      const body = document.createElement("div");
+      body.className = "dts-rowModalBody";
+      const area = document.createElement("textarea");
+      area.placeholder = tr("menu.notePlaceholder");
+      area.value = notes.get(value.nodeKey) ?? "";
+      body.appendChild(area);
+      openRowModal(tr("menu.noteTitle"), body, [
+        ...(notes.has(value.nodeKey)
+          ? [
+              {
+                label: tr("menu.noteRemove"),
+                run: () => {
+                  notes.delete(value.nodeKey);
+                  saveRowNotes(value.sessionId);
+                  renderHiddenRowRules();
+                  ctx.contextMenus.notify(tr("menu.noteCleared"), true);
+                  return true;
+                },
+              },
+            ]
+          : []),
+        {
+          label: tr("menu.noteSave"),
+          primary: true,
+          run: () => {
+            const text = area.value.trim();
+            if (text === "") notes.delete(value.nodeKey);
+            else notes.set(value.nodeKey, text);
+            saveRowNotes(value.sessionId);
+            renderHiddenRowRules();
+            ctx.contextMenus.notify(
+              tr(text === "" ? "menu.noteCleared" : "menu.noteSaved"),
+              true,
+            );
+            return true;
+          },
+        },
+      ]);
+      area.focus();
+    }
+
+    /**
+     * Undo a delete whose tombstone has not landed yet, and report the
+     * outcome. Refusals surface as themselves — "already taken effect" is
+     * what the reader needs to hear, not a generic failure line.
+     */
+    async function runUndoDelete(ctx, sessionId, runIds) {
+      try {
+        const result = await api.undoDelete(sessionId, runIds);
+        // Replace, not merge: the undone rows leave the hidden set again, and
+        // the response is the full derivation both sources agree on.
+        if (Array.isArray(result.hiddenKeys))
+          setHiddenRowKeys(sessionId, result.hiddenKeys, false);
+        ctx.contextMenus.notify(
+          tr("menu.undoDone").replace("{items}", String(result.items ?? 0)),
+          true,
+        );
+      } catch (error) {
+        ctx.contextMenus.notify(
+          error instanceof Error ? error.message : String(error),
+          false,
+        );
+      }
+    }
+
+    /**
+     * Run one chat-row menu action and report the outcome in a toast.
+     *
+     * Failures are reported here instead of by rejecting the action: the
+     * overlay's own failure toast shows the action's generic `failureLabel`,
+     * while the specific refusal — busy session, row no longer in context — is
+     * what the reader needs to decide what to do next. A delete that only
+     * queued its tombstone offers the toast's undo button, because until the
+     * next step starts the run exists nowhere else and dropping it restores
+     * the rows exactly.
+     * @param ctx - the Client plugin context, for the shared toast.
+     * @param op - `delete`, `compactThrough`, `clearThrough` or
+     *   `deleteMessages`.
+     * @param value - the captured target value (or a nodeKeys batch).
+     */
+    async function runChatRowAction(ctx, op, value) {
+      const emptyKey =
+        op === "compactThrough"
+          ? "menu.compactEmpty"
+          : op === "clearThrough"
+            ? "menu.clearEmpty"
+            : "menu.deleteEmpty";
+      const doneKey =
+        op === "compactThrough"
+          ? "menu.compactDone"
+          : op === "clearThrough"
+            ? "menu.clearDone"
+            : "menu.deleteDone";
+      const failedKey =
+        op === "compactThrough"
+          ? "menu.compactFailed"
+          : op === "clearThrough"
+            ? "menu.clearFailed"
+            : "menu.deleteFailed";
+      // A compaction is a real model call that can take tens of seconds, and
+      // the menu is already gone by then: this notice fills the silence and
+      // is replaced by the outcome toast when the call settles.
+      if (op === "compactThrough")
+        ctx.contextMenus.notify(tr("menu.compactWorking"), true);
+      try {
+        const result =
+          op === "delete"
+            ? await api.deleteMessage(value.sessionId, value.nodeKey)
+            : op === "compactThrough"
+              ? await api.compactThrough(value.sessionId, value.nodeKey)
+              : op === "clearThrough"
+                ? await api.clearThrough(value.sessionId, value.nodeKey)
+                : await api.deleteMessages(value.sessionId, value.nodeKeys);
+        if (result === null || result === undefined) {
+          // "Nothing to remove" is an outcome, not a failure: the toast's
+          // only two tones are success and failure, and a red one reads as
+          // an error where none happened.
+          ctx.contextMenus.notify(tr(emptyKey), true);
+          return;
+        }
+        // The rows leave the view the moment the rewrite lands: the response
+        // carries their keys, so no one waits for the event stream to circle
+        // back before the transcript looks right.
+        if (op !== "compactThrough" && Array.isArray(result.hiddenKeys))
+          setHiddenRowKeys(value.sessionId, result.hiddenKeys, true);
+        const undoable =
+          Array.isArray(result.queuedRunIds) && result.queuedRunIds.length > 0;
+        ctx.contextMenus.notify(
+          tr(doneKey)
+            .replace("{items}", String(result.items))
+            .replace("{before}", String(result.beforeTokens))
+            .replace("{after}", String(result.afterTokens)),
+          true,
+          undoable
+            ? {
+                label: tr("menu.undoAction"),
+                run: () =>
+                  runUndoDelete(ctx, value.sessionId, result.queuedRunIds),
+                failureLabel: tr("menu.undoFailed"),
+              }
+            : undefined,
+        );
+      } catch (error) {
+        ctx.contextMenus.notify(
+          error instanceof Error ? error.message : tr(failedKey),
+          false,
+        );
+      }
+    }
+
+    // --- multi-select delete ------------------------------------------------
+
+    /** The armed multi-select mode: one session at a time. */
+    let multiSelect = null;
+
+    /** Leave multi-select mode: listeners off, bar gone, highlights cleared. */
+    function exitMultiSelect() {
+      if (multiSelect === null) return;
+      const { sessionId, bar, onClick, onKey } = multiSelect;
+      multiSelect = null;
+      document.removeEventListener("click", onClick, true);
+      document.removeEventListener("keydown", onKey, true);
+      bar.remove();
+      setSelectedRowKeys(sessionId, []);
+    }
+
+    /**
+     * Arm multi-select delete for one session. Clicks on chat rows toggle
+     * their selection while the mode is live (interactive chrome keeps its
+     * own clicks), and the floating bar deletes the selection in one action
+     * or cancels. Escape leaves the mode.
+     */
+    function enterMultiSelect(ctx, value) {
+      exitMultiSelect();
+      const sessionId = value.sessionId;
+      const selected = new Set();
+      const bar = document.createElement("div");
+      bar.dataset.dshPlugin = PANEL_ID;
+      bar.dataset.dshMultiBar = "";
+      Object.assign(bar.style, {
+        position: "fixed",
+        left: "50%",
+        bottom: "28px",
+        transform: "translateX(-50%)",
+        zIndex: "80",
+        display: "flex",
+        alignItems: "center",
+        gap: "10px",
+        padding: "10px 14px",
+        borderRadius: "12px",
+        border: "1px solid var(--dsw-alias-border-l2)",
+        background: "var(--dsw-alias-bg-layer-2)",
+        boxShadow: "0 12px 32px rgb(0 0 0 / 25%)",
+        color: "var(--dsw-alias-label-primary)",
+        fontSize: "13px",
+      });
+      const count = document.createElement("span");
+      const delBtn = document.createElement("button");
+      delBtn.textContent = tr("menu.multiDelete");
+      const cancelBtn = document.createElement("button");
+      cancelBtn.textContent = tr("menu.multiCancel");
+      for (const button of [delBtn, cancelBtn]) {
+        button.style.cssText =
+          "padding:5px 12px;border-radius:8px;border:1px solid var(--dsw-alias-border-l2);background:var(--dsw-alias-bg-layer-1);color:inherit;font:inherit;font-size:12px;cursor:pointer";
+      }
+      delBtn.style.borderColor = "var(--dsw-alias-brand-primary)";
+      delBtn.style.color = "var(--dsw-alias-brand-primary)";
+      const refresh = () => {
+        count.textContent = tr("menu.multiCount").replace(
+          "{n}",
+          String(selected.size),
+        );
+        setSelectedRowKeys(sessionId, [...selected]);
+      };
+      const onClick = (event) => {
+        const target = event.target;
+        if (!(target instanceof Element) || bar.contains(target)) return;
+        if (target.closest(MENU_SKIP_SELECTOR) !== null) return;
+        const row = target.closest("[data-chat-node-key]");
+        if (row === null) return;
+        const owner = row.closest("[data-conversation-session]");
+        if (owner?.getAttribute("data-conversation-session") !== sessionId)
+          return;
+        const nodeKey = row.getAttribute("data-chat-node-key") ?? "";
+        if (nodeKey === "") return;
+        event.preventDefault();
+        event.stopPropagation();
+        if (selected.has(nodeKey)) selected.delete(nodeKey);
+        else selected.add(nodeKey);
+        refresh();
+      };
+      const onKey = (event) => {
+        if (event.key === "Escape") {
+          event.preventDefault();
+          event.stopPropagation();
+          exitMultiSelect();
+        }
+      };
+      delBtn.addEventListener("click", async () => {
+        if (selected.size === 0) {
+          ctx.contextMenus.notify(tr("menu.multiEmpty"), true);
+          return;
+        }
+        const nodeKeys = [...selected];
+        exitMultiSelect();
+        await runChatRowAction(ctx, "deleteMessages", { sessionId, nodeKeys });
+      });
+      cancelBtn.addEventListener("click", () => exitMultiSelect());
+      bar.append(count, delBtn, cancelBtn);
+      document.body.appendChild(bar);
+      document.addEventListener("click", onClick, true);
+      document.addEventListener("keydown", onKey, true);
+      multiSelect = { sessionId, bar, onClick, onKey };
+      refresh();
+      ctx.contextMenus.notify(tr("menu.multiHint"), true);
+    }
 
     //#endregion
 
@@ -6652,7 +7481,10 @@ window.__ModuleLoader__.load({
       const [doc, setDoc] = useState(null);
       const [error, setError] = useState(null);
       const [busy, setBusy] = useState(false);
-      const [grain, setGrain] = useState("day");
+      // Hour, because the panel opens on the "today" preset: the grain follows
+      // the span, exactly as applyPreset keeps it, and a single day folded by
+      // date would be one point on the trend chart.
+      const [grain, setGrain] = useState("hour");
       const [heatMode, setHeatMode] = useState("week");
       /**
        * The one range every card reads.
@@ -6664,12 +7496,14 @@ window.__ModuleLoader__.load({
        * `range.hours` is non-null only for "last 24 hours", which is the one
        * preset that is finer than a day.
        */
-      const [preset, setPreset] = useState("all");
-      const [range, setRange] = useState({
-        from: "",
-        to: "",
-        hours: null,
-      });
+      const [preset, setPreset] = useState("today");
+      // Resolved once at mount instead of left empty: an empty range means
+      // "the whole corpus", which is what the panel used to open on. Opening
+      // on "today" instead means the first render already shows today's
+      // numbers, and `presetRange` needs no corpus bounds to resolve it.
+      const [range, setRange] = useState(() =>
+        presetRange("today", new Date(), { from: "", to: "" }),
+      );
       const [menuOpen, setMenuOpen] = useState(false);
       const [settingsOpen, setSettingsOpen] = useState(false);
       /** The model every card is narrowed to; null means "all models". */
@@ -7911,7 +8745,7 @@ window.__ModuleLoader__.load({
      * upgrades. The session comes from the slot's own inject, so a button can
      * never act on a session other than the one it is rendered for.
      */
-    function ContextActions({ sessionId, t: translate }) {
+    function ContextActions({ sessionId, t: translate, eventSource }) {
       const [busy, setBusy] = useState(null);
       // Whether the session's conversation is mid-turn, and whether one of
       // this plugin's tasks already holds the session. Clearing replaces the
@@ -7948,6 +8782,44 @@ window.__ModuleLoader__.load({
           window.clearInterval(timer);
         };
       }, [sessionId]);
+
+      /**
+       * The rows past deletes hide, re-derived from the Host whenever this
+       * session's feed reports a replacement landing — another window can
+       * delete too — and read once on mount for what earlier deletes left
+       * behind. The rules die with the view; the log keeps the events.
+       */
+      useEffect(() => {
+        if (typeof sessionId !== "string" || sessionId === "") return undefined;
+        if (eventSource === undefined) return undefined;
+        let alive = true;
+        const pull = () => {
+          api
+            .hiddenRows(sessionId)
+            .then((value) => {
+              if (alive) setHiddenRowKeys(sessionId, value?.keys ?? [], false);
+            })
+            .catch(() => undefined);
+        };
+        pull();
+        const unsubscribe = eventSource.subscribe(() => {
+          const change = eventSource.getSnapshot()?.change;
+          const entries = Array.isArray(change?.entries) ? change.entries : [];
+          const landed = entries.some(
+            (entry) =>
+              entry?.type === "event" &&
+              entry.event?.type === "system/message" &&
+              entry.event.surfaceOp !== "append",
+          );
+          if (landed) pull();
+        });
+        return () => {
+          alive = false;
+          unsubscribe();
+          clearHiddenRowKeys(sessionId);
+          if (multiSelect?.sessionId === sessionId) exitMultiSelect();
+        };
+      }, [sessionId, eventSource]);
 
       /**
        * Fire one operation and let the session log carry the report.
@@ -8206,7 +9078,10 @@ window.__ModuleLoader__.load({
       // "sessions" is intentionally NOT in the hard inject list: the
       // model-selection hint uses ctx.get("sessions") opportunistically, and
       // a profile without the service must still load the whole plugin.
-      inject: ["slots", "locale"],
+      // "contextMenus" is the shared right-menu registry the chat row menu
+      // contributes to; the menu plugin provides it on every profile that
+      // ships the web bundle.
+      inject: ["slots", "locale", "contextMenus"],
       apply(ctx) {
         ctx.effect(
           () => ctx.locale.register(NS, { zh: ZH, en: EN, ja: JA }),
@@ -8274,8 +9149,21 @@ window.__ModuleLoader__.load({
                   order: 100,
                   locale: NS,
                   // Session-scoped slot: the framework passes the session the
-                  // entry is rendered for, which is the one it acts on.
-                  inject: (sessionId) => ({ sessionId }),
+                  // entry is rendered for, which is the one it acts on. The
+                  // live event feed rides along so the hide-rows subscription
+                  // sees replacements land; resolved here because a session
+                  // binding is scoped state the component cannot reach.
+                  inject: (sessionId) => {
+                    let eventSource;
+                    try {
+                      eventSource = ctx
+                        .get("sessions")
+                        ?.binding?.(sessionId)?.eventSource;
+                    } catch {
+                      eventSource = undefined;
+                    }
+                    return { sessionId, eventSource };
+                  },
                 },
                 ContextActions,
               ),
@@ -8334,6 +9222,321 @@ window.__ModuleLoader__.load({
             ),
           "dsh-token-panorama: optimize prompt button",
         );
+        // The chat's right-click menu: delete one row's content from the
+        // context, or compact everything above it. The shared context-menu
+        // overlay draws the popup at the gesture point, owns its keyboard and
+        // dismissal behaviour, and toasts the outcome the routes report.
+        ctx.effect(
+          () =>
+            ctx.contextMenus.register({
+              id: CHAT_ROW_MENU_TARGET,
+              target: CHAT_ROW_MENU_TARGET,
+              order: 10,
+              resolve: async (value) => {
+                // The numbers in the popup come from the Host meter. A slow
+                // or failed lookup costs only the info line — the actions
+                // build either way, because a menu that vanishes teaches
+                // nothing and the refusals are specific when clicked.
+                const info = await api
+                  .rowInfo(value.sessionId, value.nodeKey)
+                  .catch(() => null);
+                const notes = loadRowNotes(value.sessionId);
+                const collapsedTurn = collapsedTurnOf(
+                  value.sessionId,
+                  value.nodeKey,
+                );
+                const items = [];
+                if (info !== null && info !== undefined) {
+                  // A read-only line, not an action: the row's own weight and
+                  // what the context has accumulated through it.
+                  items.push({
+                    id: "rowUsageInfo",
+                    label: tr("menu.rowUsage")
+                      .replace("{row}", String(info.rowTokens))
+                      .replace("{upto}", String(info.uptoTokens)),
+                    disabled: true,
+                  });
+                }
+                items.push(
+                  {
+                    id: "usage",
+                    label: tr("menu.usageOpen"),
+                    run: () => {
+                      const total = info?.totalTokens ?? 0;
+                      const percent =
+                        total > 0
+                          ? Math.round(((info?.uptoTokens ?? 0) / total) * 100)
+                          : 0;
+                      ctx.contextMenus.notify(
+                        tr("menu.usageLine")
+                          .replace("{row}", String(info?.rowTokens ?? 0))
+                          .replace("{upto}", String(info?.uptoTokens ?? 0))
+                          .replace("{percent}", String(percent))
+                          .replace("{total}", String(total)),
+                        true,
+                      );
+                    },
+                  },
+                  {
+                    id: "copyMarkdown",
+                    label: tr("menu.copyMarkdown"),
+                    run: async () => {
+                      const markdown = await api.nodeMarkdown(
+                        value.sessionId,
+                        value.nodeKey,
+                      );
+                      if (typeof markdown !== "string" || markdown === "") {
+                        ctx.contextMenus.notify(tr("menu.copyFailed"), false);
+                        return;
+                      }
+                      const ok = await copyToClipboard(markdown);
+                      ctx.contextMenus.notify(
+                        ok
+                          ? tr("menu.copyDone").replace(
+                              "{chars}",
+                              String(markdown.length),
+                            )
+                          : tr("menu.copyFailed"),
+                        ok,
+                      );
+                    },
+                    failureLabel: tr("menu.copyFailed"),
+                  },
+                  {
+                    id: "quoteReply",
+                    label: tr("menu.quoteReply"),
+                    run: async () => {
+                      const markdown = await api.nodeMarkdown(
+                        value.sessionId,
+                        value.nodeKey,
+                      );
+                      if (typeof markdown !== "string" || markdown === "") {
+                        ctx.contextMenus.notify(tr("menu.copyFailed"), false);
+                        return;
+                      }
+                      const input = composerFor(ctx, value.sessionId);
+                      const inserted = input?.insertQuote?.(markdown);
+                      if (inserted === true) {
+                        input.focus?.();
+                        ctx.contextMenus.notify(tr("menu.quoteDone"), true);
+                        return;
+                      }
+                      // No composer reachable (or it declined the quote):
+                      // the text still gets to the user through the clipboard.
+                      await copyToClipboard(markdown);
+                      ctx.contextMenus.notify(tr("menu.quoteFallback"), true);
+                    },
+                    failureLabel: tr("menu.copyFailed"),
+                  },
+                  {
+                    id: "viewRaw",
+                    label: tr("menu.viewRaw"),
+                    run: async () => {
+                      const events = await api.nodeEvents(
+                        value.sessionId,
+                        value.nodeKey,
+                      );
+                      if (!Array.isArray(events) || events.length === 0) {
+                        ctx.contextMenus.notify(tr("menu.deleteEmpty"), true);
+                        return;
+                      }
+                      showRawEvents(tr("menu.rawTitle"), events);
+                    },
+                    failureLabel: tr("menu.deleteFailed"),
+                  },
+                );
+                if (collapsedTurn !== null) {
+                  items.push({
+                    id: "expandTurn",
+                    label: tr("menu.expandTurn"),
+                    run: () =>
+                      clearCollapsedTurn(value.sessionId, collapsedTurn),
+                  });
+                } else {
+                  items.push({
+                    id: "collapseTurn",
+                    label: tr("menu.collapseTurn"),
+                    disabled: info !== null && info.canCollapse === false,
+                    run: async () => {
+                      const rows = await api.turnRows(
+                        value.sessionId,
+                        value.nodeKey,
+                      );
+                      if (rows === null) return;
+                      const deleted =
+                        hiddenRowKeysBySession.get(value.sessionId) ??
+                        new Set();
+                      const keepKey =
+                        (rows.keepCandidates ?? []).find(
+                          (key) => !deleted.has(key),
+                        ) ?? rows.keepCandidates?.[0];
+                      if (keepKey === undefined) return;
+                      setCollapsedTurn(
+                        value.sessionId,
+                        rows.turn,
+                        rows.keys,
+                        keepKey,
+                      );
+                      ctx.contextMenus.notify(
+                        tr("menu.collapsedHint").replace(
+                          "{rows}",
+                          String(rows.keys.length + 1),
+                        ),
+                        true,
+                      );
+                    },
+                    failureLabel: tr("menu.deleteFailed"),
+                  });
+                }
+                items.push({
+                  id: "note",
+                  label:
+                    tr("menu.note") +
+                    (notes.has(value.nodeKey) ? " 📝" : ""),
+                  run: () => openNoteModal(ctx, value),
+                });
+                // The destructive group sits last and is labelled with the
+                // scope the Host will actually remove: one tool call takes its
+                // whole reply with it, and a compaction card's summary is not
+                // an undo of the history it replaced. Saying so after the
+                // click would be too late — the rewrite is not reversible.
+                items.push(
+                  {
+                    id: "compactThrough",
+                    label: tr("menu.compactThrough"),
+                    disabled: info !== null && info.canCompact === false,
+                    separatorBefore: true,
+                    run: () => runChatRowAction(ctx, "compactThrough", value),
+                    failureLabel: tr("menu.compactFailed"),
+                  },
+                  {
+                    id: "clearThrough",
+                    label: tr("menu.clearThrough"),
+                    disabled: info !== null && info.canClear === false,
+                    danger: true,
+                    run: () => runChatRowAction(ctx, "clearThrough", value),
+                    failureLabel: tr("menu.clearFailed"),
+                  },
+                  {
+                    id: "delete",
+                    label: tr(
+                      value.flowKind === "tool-call"
+                        ? "menu.deleteReply"
+                        : value.flowKind === "compaction" ||
+                            value.flowKind === "manual-compaction"
+                          ? "menu.deleteSummary"
+                          : "menu.delete",
+                    ),
+                    danger: true,
+                    run: () => runChatRowAction(ctx, "delete", value),
+                    failureLabel: tr("menu.deleteFailed"),
+                  },
+                  {
+                    id: "multiSelect",
+                    label: tr("menu.multiSelect"),
+                    separatorBefore: true,
+                    run: () => enterMultiSelect(ctx, value),
+                  },
+                  {
+                    id: "undoDelete",
+                    label: tr("menu.undo"),
+                    run: () => runUndoDelete(ctx, value.sessionId),
+                    failureLabel: tr("menu.undoFailed"),
+                  },
+                );
+                return items;
+              },
+            }),
+          "dsh-token-panorama: chat row menu actions",
+        );
+        ctx.effect(() => {
+          const onContextMenu = (event) => {
+            // Any earlier handler that claimed the gesture — a file link, a
+            // reference chip, another plugin's menu — prevents default first,
+            // and this runs in the bubble phase precisely so those element
+            // handlers get their chance: whatever they own keeps its menu.
+            if (event.defaultPrevented) return;
+            const target = event.target;
+            if (!(target instanceof Element)) return;
+            // Selected text keeps the browser's own menu: "Copy" lives there,
+            // and a right-click inside a live selection is how readers reach
+            // it. Click once to clear the selection and the row menu appears.
+            const selection = target.ownerDocument.getSelection();
+            if (selection !== null && !selection.isCollapsed && selection.rangeCount > 0) {
+              const keyboard = event.clientX === 0 && event.clientY === 0;
+              const rects = selection.getRangeAt(0).getClientRects();
+              const inside =
+                keyboard ||
+                [...rects].some(
+                  (rect) =>
+                    event.clientX >= rect.left &&
+                    event.clientX <= rect.right &&
+                    event.clientY >= rect.top &&
+                    event.clientY <= rect.bottom,
+                );
+              if (inside) return;
+            }
+            // Interactive chrome keeps the browser's own menu — links and
+            // images forward their own targets to the platform's menu, and a
+            // composer or button click is not a message gesture.
+            if (target.closest(MENU_SKIP_SELECTOR) !== null) return;
+            const row = target.closest("[data-chat-node-key]");
+            if (row === null) return;
+            const flowKind = row.getAttribute("data-chat-flow-kind") ?? "";
+            // Rows the Host cannot map to surface nodes — command receipts,
+            // retry rows, turn errors — offer no actions: they are transcript
+            // decorations with nothing in the model's context to remove.
+            if (!MENU_FLOW_KINDS.has(flowKind)) return;
+            const nodeKey = row.getAttribute("data-chat-node-key") ?? "";
+            const owner = target.closest("[data-conversation-session]");
+            const sessionId =
+              owner?.getAttribute("data-conversation-session") ?? "";
+            if (nodeKey === "" || sessionId === "") return;
+            // Suppression is load-bearing twice over: it keeps the browser's
+            // native menu away, and the menu plugin closes its own popup for
+            // any contextmenu event that was not prevented — including the
+            // very event that is about to open it.
+            event.preventDefault();
+            // A keyboard gesture (Shift+F10, the menu key) reports no
+            // coordinates; anchor it to the row so the menu opens where the
+            // reader is looking instead of at the viewport corner.
+            const keyboard = event.clientX === 0 && event.clientY === 0;
+            const rect = row.getBoundingClientRect();
+            ctx.contextMenus.open(
+              {
+                kind: CHAT_ROW_MENU_TARGET,
+                value: { sessionId, nodeKey, flowKind },
+              },
+              keyboard
+                ? { x: rect.left + 12, y: Math.max(0, rect.bottom - 4) }
+                : { x: event.clientX, y: event.clientY },
+            );
+          };
+          // A folded turn's representative row unfolds on click: the ::after
+          // hint says so, and the row is the only visible handle of the turn.
+          // Multi-select owns clicks while it is armed.
+          const onClick = (event) => {
+            if (multiSelect !== null) return;
+            const target = event.target;
+            if (!(target instanceof Element)) return;
+            const row = target.closest("[data-chat-node-key]");
+            if (row === null) return;
+            const owner = row.closest("[data-conversation-session]");
+            const sessionId =
+              owner?.getAttribute("data-conversation-session") ?? "";
+            const nodeKey = row.getAttribute("data-chat-node-key") ?? "";
+            if (sessionId === "" || nodeKey === "") return;
+            const turn = collapsedTurnOf(sessionId, nodeKey);
+            if (turn === null) return;
+            clearCollapsedTurn(sessionId, turn);
+          };
+          document.addEventListener("contextmenu", onContextMenu);
+          document.addEventListener("click", onClick);
+          return () => {
+            document.removeEventListener("contextmenu", onContextMenu);
+            document.removeEventListener("click", onClick);
+          };
+        }, "dsh-token-panorama: chat row menu gesture");
       },
     };
   },

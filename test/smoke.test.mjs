@@ -351,5 +351,26 @@ for (const marker of ["const exportJson", "const exportCsv", "function download"
   assert.ok(clientText.includes(marker), `client.js lost ${marker}`);
 }
 
+// --- C3: the chat row menu wiring stays present ---------------------------
+for (const marker of [
+  "CHAT_ROW_MENU_TARGET",
+  "contextMenus.register",
+  "deleteMessage",
+  "compactThrough",
+  "setHiddenRowKeys",
+  "hiddenRows",
+  "clearThrough",
+  "deleteMessages",
+  "undoDelete",
+  "rowInfo",
+  "turnRows",
+  "nodeMarkdown",
+  "nodeEvents",
+  "enterMultiSelect",
+  "openNoteModal",
+]) {
+  assert.ok(clientText.includes(marker), `client.js lost ${marker}`);
+}
+
 rmSync(process.env.DSH_HOME, { recursive: true, force: true });
 console.log("smoke ok: probe, schema, workweek, lock, presets, merge, ledger, export");
